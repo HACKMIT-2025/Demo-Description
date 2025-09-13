@@ -787,7 +787,7 @@ app.innerHTML = `
             <span class="text-blue-400 font-semibold">WebGL</span> •
             <span class="text-purple-400 font-semibold">Canvas API</span>
           </p>
-          <a href="/docs.html" class="inline-block mt-3 px-4 py-2 bg-gradient-green-blue rounded-lg hover-glow text-sm font-semibold transition-all">
+          <a href="docs.html" class="inline-block mt-3 px-4 py-2 bg-gradient-green-blue rounded-lg hover-glow text-sm font-semibold transition-all">
             📚 View Full API Documentation
           </a>
         </div>
@@ -877,7 +877,7 @@ app.innerHTML = `
             <button class="px-8 py-4 bg-gradient-green-blue rounded-lg hover-glow text-lg font-semibold">
               Start Creating Now
             </button>
-            <a href="/docs.html" class="px-8 py-4 glass-card hover:bg-white/10 transition-colors text-lg text-center">
+            <a href="docs.html" class="px-8 py-4 glass-card hover:bg-white/10 transition-colors text-lg text-center">
               View Documentation
             </a>
           </div>
