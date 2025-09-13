@@ -21,6 +21,7 @@ app.innerHTML = `
           <a href="#features" class="hover:text-green-400 transition-colors">Features</a>
           <a href="#workflow" class="hover:text-green-400 transition-colors">How It Works</a>
           <a href="#tech" class="hover:text-green-400 transition-colors">Tech Stack</a>
+          <a href="#mario-engine" class="hover:text-green-400 transition-colors">Mario Engine</a>
           <button class="px-6 py-2 bg-gradient-green-blue rounded-lg hover-glow font-semibold">
             Try It Now
           </button>
@@ -445,6 +446,347 @@ app.innerHTML = `
             S
           </div>
           <span class="text-xs text-gray-400">AI Music (Suno)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mario Game Engine Section -->
+  <section id="mario-engine" class="py-20 relative">
+    <div class="absolute inset-0 -z-10">
+      <div class="absolute top-1/3 left-10 w-64 h-64 bg-red-500/10 rounded-full blur-3xl animate-float"></div>
+      <div class="absolute bottom-1/3 right-10 w-72 h-72 bg-yellow-500/10 rounded-full blur-3xl animate-float" style="animation-delay: 3s;"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto section-padding">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">
+          <span class="gradient-text">Mario Game Engine</span>
+        </h2>
+        <p class="text-xl text-gray-400">Modular API-driven platform game creation system</p>
+      </div>
+
+      <!-- Engine Overview -->
+      <div class="grid lg:grid-cols-2 gap-12 items-center mb-16">
+        <div class="space-y-6">
+          <div class="inline-block px-4 py-2 glass-card">
+            <span class="text-sm text-green-400">🎮 Game Engine Core v1.0</span>
+          </div>
+
+          <h3 class="text-3xl font-bold">
+            Build Mario-Style Platform Games
+            <span class="block text-xl text-gray-400 mt-2">With Simple API Calls</span>
+          </h3>
+
+          <p class="text-lg text-gray-400">
+            A powerful, modular game engine designed for both manual level construction and
+            <span class="text-green-400 font-semibold">AI-driven automatic generation</span>
+            from image recognition data. Perfect for creating retro-style platform games in minutes.
+          </p>
+
+          <div class="flex flex-wrap gap-3 text-sm">
+            <div class="flex items-center gap-2 px-3 py-1 glass-card rounded-full">
+              <span class="text-green-400">✓</span>
+              <span>Method Chaining API</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-1 glass-card rounded-full">
+              <span class="text-green-400">✓</span>
+              <span>AI Integration Ready</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-1 glass-card rounded-full">
+              <span class="text-green-400">✓</span>
+              <span>WebGL Rendering</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-1 glass-card rounded-full">
+              <span class="text-green-400">✓</span>
+              <span>Physics Engine</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Demo -->
+        <div class="glass-card p-6 rounded-2xl">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            <span class="text-xs text-gray-400 ml-2">mario-engine.ts</span>
+          </div>
+
+          <pre class="bg-black/50 p-4 rounded-lg overflow-x-auto text-sm">
+<code><span class="text-purple-400">import</span> { <span class="text-yellow-400">GameAPI</span> } <span class="text-purple-400">from</span> <span class="text-green-400">'./engine'</span>;
+
+<span class="text-gray-500">// Initialize game with one line</span>
+<span class="text-blue-400">const</span> <span class="text-blue-400">game</span> = <span class="text-purple-400">new</span> <span class="text-yellow-400">GameAPI</span>(<span class="text-green-400">'canvas'</span>, {
+  <span class="text-orange-400">width</span>: <span class="text-cyan-400">1024</span>,
+  <span class="text-orange-400">height</span>: <span class="text-cyan-400">576</span>,
+  <span class="text-orange-400">gravity</span>: <span class="text-cyan-400">0.5</span>
+});
+
+<span class="text-gray-500">// Build level with method chaining</span>
+<span class="text-blue-400">game</span>
+  .<span class="text-yellow-400">clearLevel</span>()
+  .<span class="text-yellow-400">generateGround</span>(<span class="text-cyan-400">0</span>, <span class="text-cyan-400">3000</span>, <span class="text-cyan-400">500</span>)
+  .<span class="text-yellow-400">addPipe</span>(<span class="text-cyan-400">300</span>, <span class="text-cyan-400">400</span>)
+  .<span class="text-yellow-400">addCoinRow</span>(<span class="text-cyan-400">400</span>, <span class="text-cyan-400">350</span>, <span class="text-cyan-400">5</span>)
+  .<span class="text-yellow-400">addEnemy</span>(<span class="text-cyan-400">600</span>, <span class="text-cyan-400">450</span>, <span class="text-green-400">'goomba'</span>)
+  .<span class="text-yellow-400">addPowerUp</span>(<span class="text-cyan-400">800</span>, <span class="text-cyan-400">300</span>, <span class="text-green-400">'mushroom'</span>)
+  .<span class="text-yellow-400">setPlayerStart</span>(<span class="text-cyan-400">100</span>, <span class="text-cyan-400">400</span>)
+  .<span class="text-yellow-400">buildLevel</span>()
+  .<span class="text-yellow-400">startGame</span>();</code></pre>
+        </div>
+      </div>
+
+      <!-- Core Features Grid -->
+      <div class="mb-16">
+        <h3 class="text-2xl font-bold mb-8 text-center">
+          <span class="gradient-text">Core Engine Features</span>
+        </h3>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Feature 1 -->
+          <div class="glass-card p-6 hover-glow group">
+            <div class="w-12 h-12 bg-gradient-green-blue rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-xl">🏗️</span>
+            </div>
+            <h4 class="text-xl font-semibold mb-2">Level Builder API</h4>
+            <p class="text-gray-400 text-sm">
+              Intuitive API for creating complex levels with platforms, enemies, coins, and power-ups
+            </p>
+            <div class="mt-4 space-y-1 text-xs text-gray-500">
+              <div>• addPlatform()</div>
+              <div>• addEnemy()</div>
+              <div>• addPowerUp()</div>
+              <div>• generateGround()</div>
+            </div>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="glass-card p-6 hover-glow group">
+            <div class="w-12 h-12 bg-gradient-blue-purple rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-xl">🤖</span>
+            </div>
+            <h4 class="text-xl font-semibold mb-2">AI Integration</h4>
+            <p class="text-gray-400 text-sm">
+              Seamlessly integrate with image recognition AI to generate levels from visual data
+            </p>
+            <div class="mt-4 space-y-1 text-xs text-gray-500">
+              <div>• generateFromImageData()</div>
+              <div>• Object detection support</div>
+              <div>• Auto-positioning</div>
+              <div>• Smart level layout</div>
+            </div>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="glass-card p-6 hover-glow group">
+            <div class="w-12 h-12 bg-gradient-purple-green rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-xl">⚡</span>
+            </div>
+            <h4 class="text-xl font-semibold mb-2">Real-time Physics</h4>
+            <p class="text-gray-400 text-sm">
+              Built-in physics engine with collision detection, gravity, and smooth character movement
+            </p>
+            <div class="mt-4 space-y-1 text-xs text-gray-500">
+              <div>• Collision detection</div>
+              <div>• Gravity simulation</div>
+              <div>• Jump mechanics</div>
+              <div>• Enemy AI pathfinding</div>
+            </div>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="glass-card p-6 hover-glow group">
+            <div class="w-12 h-12 bg-gradient-green-blue rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-xl">🎨</span>
+            </div>
+            <h4 class="text-xl font-semibold mb-2">Theme Support</h4>
+            <p class="text-gray-400 text-sm">
+              Multiple visual themes including classic, underground, and sky levels
+            </p>
+            <div class="mt-4 space-y-1 text-xs text-gray-500">
+              <div>• loadClassicLevel()</div>
+              <div>• loadUndergroundLevel()</div>
+              <div>• loadSkyLevel()</div>
+              <div>• Custom themes</div>
+            </div>
+          </div>
+
+          <!-- Feature 5 -->
+          <div class="glass-card p-6 hover-glow group">
+            <div class="w-12 h-12 bg-gradient-blue-purple rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-xl">💾</span>
+            </div>
+            <h4 class="text-xl font-semibold mb-2">Import/Export</h4>
+            <p class="text-gray-400 text-sm">
+              Save and load levels as JSON for easy sharing and persistence
+            </p>
+            <div class="mt-4 space-y-1 text-xs text-gray-500">
+              <div>• exportJSON()</div>
+              <div>• importJSON()</div>
+              <div>• Level serialization</div>
+              <div>• Cloud save ready</div>
+            </div>
+          </div>
+
+          <!-- Feature 6 -->
+          <div class="glass-card p-6 hover-glow group">
+            <div class="w-12 h-12 bg-gradient-purple-green rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <span class="text-xl">🎮</span>
+            </div>
+            <h4 class="text-xl font-semibold mb-2">Game Controls</h4>
+            <p class="text-gray-400 text-sm">
+              Responsive keyboard controls with smooth character movement and actions
+            </p>
+            <div class="mt-4 space-y-1 text-xs text-gray-500">
+              <div>• Arrow keys movement</div>
+              <div>• Space to jump</div>
+              <div>• Shift to run</div>
+              <div>• P to pause</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Integration Example -->
+      <div class="glass-card p-8 rounded-2xl mb-16">
+        <h3 class="text-2xl font-bold mb-6">
+          <span class="gradient-text">AI-Powered Level Generation</span>
+        </h3>
+
+        <div class="grid lg:grid-cols-2 gap-8 items-center">
+          <div>
+            <p class="text-gray-400 mb-4">
+              Transform image recognition data directly into playable levels with our AI integration API:
+            </p>
+
+            <pre class="bg-black/50 p-4 rounded-lg overflow-x-auto text-sm">
+<code><span class="text-gray-500">// AI detection output</span>
+<span class="text-blue-400">const</span> <span class="text-blue-400">imageData</span> = [
+  { <span class="text-orange-400">type</span>: <span class="text-green-400">'ground'</span>, <span class="text-orange-400">x</span>: <span class="text-cyan-400">0</span>, <span class="text-orange-400">y</span>: <span class="text-cyan-400">500</span>, <span class="text-orange-400">width</span>: <span class="text-cyan-400">2000</span> },
+  { <span class="text-orange-400">type</span>: <span class="text-green-400">'platform'</span>, <span class="text-orange-400">x</span>: <span class="text-cyan-400">300</span>, <span class="text-orange-400">y</span>: <span class="text-cyan-400">400</span> },
+  { <span class="text-orange-400">type</span>: <span class="text-green-400">'enemy'</span>, <span class="text-orange-400">x</span>: <span class="text-cyan-400">500</span>, <span class="text-orange-400">enemyType</span>: <span class="text-green-400">'goomba'</span> },
+  { <span class="text-orange-400">type</span>: <span class="text-green-400">'coin'</span>, <span class="text-orange-400">x</span>: <span class="text-cyan-400">350</span>, <span class="text-orange-400">y</span>: <span class="text-cyan-400">350</span> },
+  { <span class="text-orange-400">type</span>: <span class="text-green-400">'player'</span>, <span class="text-orange-400">x</span>: <span class="text-cyan-400">100</span>, <span class="text-orange-400">y</span>: <span class="text-cyan-400">400</span> }
+];
+
+<span class="text-gray-500">// Generate level from AI data</span>
+<span class="text-blue-400">game</span>
+  .<span class="text-yellow-400">generateFromImageData</span>(<span class="text-blue-400">imageData</span>)
+  .<span class="text-yellow-400">startGame</span>();</code></pre>
+          </div>
+
+          <div class="space-y-4">
+            <div class="glass-card p-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-semibold">Supported Elements</span>
+                <span class="text-xs text-green-400">12 Types</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="text-center p-2 bg-black/30 rounded">
+                  <span class="text-2xl">🏔️</span>
+                  <p class="text-xs mt-1">Platform</p>
+                </div>
+                <div class="text-center p-2 bg-black/30 rounded">
+                  <span class="text-2xl">👾</span>
+                  <p class="text-xs mt-1">Enemy</p>
+                </div>
+                <div class="text-center p-2 bg-black/30 rounded">
+                  <span class="text-2xl">🪙</span>
+                  <p class="text-xs mt-1">Coin</p>
+                </div>
+                <div class="text-center p-2 bg-black/30 rounded">
+                  <span class="text-2xl">🍄</span>
+                  <p class="text-xs mt-1">Power-up</p>
+                </div>
+                <div class="text-center p-2 bg-black/30 rounded">
+                  <span class="text-2xl">🚰</span>
+                  <p class="text-xs mt-1">Pipe</p>
+                </div>
+                <div class="text-center p-2 bg-black/30 rounded">
+                  <span class="text-2xl">❓</span>
+                  <p class="text-xs mt-1">Block</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card p-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-semibold">Performance</span>
+                <span class="text-xs text-green-400">60 FPS</span>
+              </div>
+              <div class="space-y-2 text-xs">
+                <div class="flex justify-between">
+                  <span class="text-gray-400">Render Time</span>
+                  <span>&lt; 16ms</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-400">Physics Update</span>
+                  <span>&lt; 2ms</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-400">Memory Usage</span>
+                  <span>&lt; 50MB</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Architecture Overview -->
+      <div class="text-center mb-8">
+        <h3 class="text-2xl font-bold mb-4">
+          <span class="gradient-text">Engine Architecture</span>
+        </h3>
+        <p class="text-gray-400">Modular design for maximum flexibility and performance</p>
+      </div>
+
+      <div class="glass-card p-8 rounded-2xl">
+        <div class="grid md:grid-cols-4 gap-4">
+          <div class="text-center">
+            <div class="glass-card p-4 mb-2 hover:bg-white/10 transition-colors">
+              <span class="text-3xl">🎮</span>
+              <h4 class="font-semibold mt-2">GameAPI</h4>
+              <p class="text-xs text-gray-400 mt-1">Main interface</p>
+            </div>
+            <div class="w-full h-1 bg-gradient-green-blue rounded"></div>
+          </div>
+
+          <div class="text-center">
+            <div class="glass-card p-4 mb-2 hover:bg-white/10 transition-colors">
+              <span class="text-3xl">⚙️</span>
+              <h4 class="font-semibold mt-2">GameEngine</h4>
+              <p class="text-xs text-gray-400 mt-1">Core loop</p>
+            </div>
+            <div class="w-full h-1 bg-gradient-blue-purple rounded"></div>
+          </div>
+
+          <div class="text-center">
+            <div class="glass-card p-4 mb-2 hover:bg-white/10 transition-colors">
+              <span class="text-3xl">🎨</span>
+              <h4 class="font-semibold mt-2">Renderer</h4>
+              <p class="text-xs text-gray-400 mt-1">Canvas/WebGL</p>
+            </div>
+            <div class="w-full h-1 bg-gradient-purple-green rounded"></div>
+          </div>
+
+          <div class="text-center">
+            <div class="glass-card p-4 mb-2 hover:bg-white/10 transition-colors">
+              <span class="text-3xl">⚡</span>
+              <h4 class="font-semibold mt-2">PhysicsEngine</h4>
+              <p class="text-xs text-gray-400 mt-1">Collision & movement</p>
+            </div>
+            <div class="w-full h-1 bg-gradient-green-blue rounded"></div>
+          </div>
+        </div>
+
+        <div class="mt-8 p-4 bg-black/30 rounded-lg text-center">
+          <p class="text-sm text-gray-400">
+            Built with <span class="text-green-400 font-semibold">TypeScript</span> •
+            <span class="text-blue-400 font-semibold">WebGL</span> •
+            <span class="text-purple-400 font-semibold">Canvas API</span>
+          </p>
         </div>
       </div>
     </div>
