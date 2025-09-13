@@ -111,3 +111,15 @@ body {
 .bg-gradient-overlay {
   background: linear-gradient(to right, rgba(52, 178, 152, 0.1), rgba(0, 153, 255, 0.1));
 }
+
+/* Typing cursor animation */
+.typing-cursor {
+  animation: typing-blink 1s infinite;
+  color: var(--color-accent-green);
+  font-weight: bold;
+}
+
+@keyframes typing-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}

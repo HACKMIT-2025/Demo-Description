@@ -787,6 +787,9 @@ app.innerHTML = `
             <span class="text-blue-400 font-semibold">WebGL</span> •
             <span class="text-purple-400 font-semibold">Canvas API</span>
           </p>
+          <a href="/docs.html" class="inline-block mt-3 px-4 py-2 bg-gradient-green-blue rounded-lg hover-glow text-sm font-semibold transition-all">
+            📚 View Full API Documentation
+          </a>
         </div>
       </div>
     </div>
@@ -874,9 +877,9 @@ app.innerHTML = `
             <button class="px-8 py-4 bg-gradient-green-blue rounded-lg hover-glow text-lg font-semibold">
               Start Creating Now
             </button>
-            <button class="px-8 py-4 glass-card hover:bg-white/10 transition-colors text-lg">
+            <a href="/docs.html" class="px-8 py-4 glass-card hover:bg-white/10 transition-colors text-lg text-center">
               View Documentation
-            </button>
+            </a>
           </div>
         </div>
       </div>
@@ -934,30 +937,54 @@ if (nav) {
   });
 }
 
-// Add typing animation for code
-const codeBlock = document.querySelector('pre code');
-if (codeBlock) {
-  const originalText = codeBlock.innerHTML;
-  codeBlock.innerHTML = '';
-  let index = 0;
+// Add typing animation for code blocks
+function initializeCodeTyping() {
+  const codeBlocks = document.querySelectorAll('pre code');
 
-  function typeCode() {
-    if (index < originalText.length) {
-      codeBlock.innerHTML = originalText.slice(0, index);
-      index += 10;
-      setTimeout(typeCode, 10);
-    }
-  }
+  codeBlocks.forEach(codeBlock => {
+    const originalText = codeBlock.innerHTML;
+    codeBlock.innerHTML = '';
+    let hasStarted = false;
 
-  // Start typing when element is in view
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        typeCode();
-        observer.disconnect();
+    function typeCode() {
+      if (hasStarted) return;
+      hasStarted = true;
+
+      let index = 0;
+      const speed = 15; // Characters per step
+      const delay = 30; // Milliseconds between steps
+
+      function step() {
+        if (index < originalText.length) {
+          // Add cursor effect during typing
+          const currentText = originalText.slice(0, index);
+          codeBlock.innerHTML = currentText + '<span class="typing-cursor">|</span>';
+          index += speed;
+          setTimeout(step, delay);
+        } else {
+          // Remove cursor when done
+          codeBlock.innerHTML = originalText;
+        }
       }
-    });
-  });
 
-  observer.observe(codeBlock);
+      step();
+    }
+
+    // Start typing when element is in view
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !hasStarted) {
+          setTimeout(() => typeCode(), 500); // Small delay for better UX
+          observer.disconnect();
+        }
+      });
+    }, {
+      threshold: 0.3 // Trigger when 30% of the element is visible
+    });
+
+    observer.observe(codeBlock.parentElement || codeBlock);
+  });
 }
+
+// Initialize code typing after DOM is loaded
+setTimeout(initializeCodeTyping, 100);
