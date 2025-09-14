@@ -2,18 +2,14 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "routes": [
+  "rewrites": [
     {
-      "src": "/docs.html",
-      "dest": "/docs.html"
+      "source": "/docs",
+      "destination": "/docs.html"
     },
     {
-      "src": "/docs",
-      "dest": "/docs.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/((?!assets|docs\\.html).*)",
+      "destination": "/index.html"
     }
   ]
 }
