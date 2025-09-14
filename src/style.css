@@ -84,6 +84,70 @@ body {
   50% { opacity: 0.8; }
 }
 
+/* Ultra-Advanced Cyberpunk Animations */
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(52, 178, 152, 0.4),
+                0 0 40px rgba(52, 178, 152, 0.2),
+                inset 0 0 20px rgba(52, 178, 152, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(52, 178, 152, 0.8),
+                0 0 80px rgba(52, 178, 152, 0.4),
+                inset 0 0 40px rgba(52, 178, 152, 0.2);
+  }
+}
+
+@keyframes holographicShift {
+  0% { filter: hue-rotate(0deg) saturate(1); }
+  25% { filter: hue-rotate(90deg) saturate(1.2); }
+  50% { filter: hue-rotate(180deg) saturate(1.4); }
+  75% { filter: hue-rotate(270deg) saturate(1.2); }
+  100% { filter: hue-rotate(360deg) saturate(1); }
+}
+
+@keyframes matrixRain {
+  0% { transform: translateY(-100vh) rotateZ(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotateZ(360deg); opacity: 0; }
+}
+
+@keyframes cyberpunkGlitch {
+  0%, 90%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-2px); }
+  40% { transform: translateX(2px); }
+  60% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+}
+
+@keyframes digitalFlicker {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.02); }
+}
+
+@keyframes rotate3D {
+  0% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg); }
+  25% { transform: perspective(1000px) rotateY(90deg) rotateX(5deg); }
+  50% { transform: perspective(1000px) rotateY(180deg) rotateX(0deg); }
+  75% { transform: perspective(1000px) rotateY(270deg) rotateX(-5deg); }
+  100% { transform: perspective(1000px) rotateY(360deg) rotateX(0deg); }
+}
+
+@keyframes dataStream {
+  0% {
+    background-position: 0% 0%;
+    opacity: 0.3;
+  }
+  50% {
+    background-position: 100% 100%;
+    opacity: 0.8;
+  }
+  100% {
+    background-position: 0% 0%;
+    opacity: 0.3;
+  }
+}
+
+/* Animation Classes */
 .animate-gradient {
   animation: gradient 8s ease infinite;
 }
@@ -96,6 +160,34 @@ body {
   animation: glow 2s ease-in-out infinite;
 }
 
+.animate-neon-pulse {
+  animation: neonPulse 3s ease-in-out infinite;
+}
+
+.animate-holographic {
+  animation: holographicShift 10s linear infinite;
+}
+
+.animate-matrix-rain {
+  animation: matrixRain 8s linear infinite;
+}
+
+.animate-cyberpunk-glitch {
+  animation: cyberpunkGlitch 0.3s ease-in-out infinite;
+}
+
+.animate-digital-flicker {
+  animation: digitalFlicker 2s ease-in-out infinite;
+}
+
+.animate-rotate-3d {
+  animation: rotate3D 20s linear infinite;
+}
+
+.animate-data-stream {
+  animation: dataStream 6s ease infinite;
+}
+
 .bg-gradient-green-blue {
   background: linear-gradient(135deg, var(--color-accent-green), var(--color-accent-blue));
 }
@@ -106,6 +198,200 @@ body {
 
 .bg-gradient-purple-green {
   background: linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-green));
+}
+
+/* Ultra-Advanced Holographic UI Components */
+.holographic-card {
+  background: linear-gradient(135deg,
+    rgba(52, 178, 152, 0.1),
+    rgba(139, 92, 246, 0.1),
+    rgba(0, 153, 255, 0.1));
+  backdrop-filter: blur(20px);
+  border: 1px solid transparent;
+  border-image: linear-gradient(45deg,
+    rgba(52, 178, 152, 0.5),
+    rgba(139, 92, 246, 0.5),
+    rgba(0, 153, 255, 0.5)) 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.holographic-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg,
+    #34b298, #8b5cf6, #0099ff, #34b298);
+  z-index: -1;
+  border-radius: inherit;
+  animation: rotate3D 10s linear infinite;
+}
+
+.holographic-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent);
+  animation: holographicSweep 3s infinite;
+}
+
+@keyframes holographicSweep {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.neon-border {
+  border: 2px solid transparent;
+  background: linear-gradient(var(--color-dark-card), var(--color-dark-card)) padding-box,
+              linear-gradient(45deg, #34b298, #8b5cf6, #0099ff) border-box;
+  animation: neonBorderPulse 4s ease-in-out infinite;
+}
+
+@keyframes neonBorderPulse {
+  0%, 100% {
+    border-image: linear-gradient(45deg,
+      rgba(52, 178, 152, 0.8),
+      rgba(139, 92, 246, 0.8),
+      rgba(0, 153, 255, 0.8)) 1;
+  }
+  50% {
+    border-image: linear-gradient(45deg,
+      rgba(52, 178, 152, 1),
+      rgba(139, 92, 246, 1),
+      rgba(0, 153, 255, 1)) 1;
+  }
+}
+
+.cyberpunk-text {
+  position: relative;
+  color: #00ff9f;
+  text-shadow: 0 0 10px #00ff9f,
+               0 0 20px #00ff9f,
+               0 0 40px #00ff9f;
+  animation: cyberpunkTextGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes cyberpunkTextGlow {
+  0% {
+    text-shadow: 0 0 10px #00ff9f,
+                 0 0 20px #00ff9f,
+                 0 0 40px #00ff9f;
+  }
+  100% {
+    text-shadow: 0 0 5px #00ff9f,
+                 0 0 10px #00ff9f,
+                 0 0 20px #00ff9f,
+                 0 0 40px #00ff9f,
+                 0 0 80px #00ff9f;
+  }
+}
+
+.matrix-background {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(52, 178, 152, 0.03) 2px,
+    rgba(52, 178, 152, 0.03) 4px
+  );
+  animation: dataStream 8s linear infinite;
+}
+
+.floating-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.floating-particles::before,
+.floating-particles::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, #34b298, transparent);
+  border-radius: 50%;
+  animation: floatingParticles 15s linear infinite;
+}
+
+.floating-particles::before {
+  top: 10%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.floating-particles::after {
+  top: 60%;
+  left: 80%;
+  animation-delay: 7s;
+}
+
+@keyframes floatingParticles {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) scale(1);
+    opacity: 0;
+  }
+}
+
+.terminal-cursor::after {
+  content: '|';
+  color: #00ff9f;
+  animation: terminalBlink 1s step-start infinite;
+}
+
+@keyframes terminalBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.glassmorphism-enhanced {
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(15px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.hover-lift {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hover-lift:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4),
+              0 0 30px rgba(52, 178, 152, 0.3);
+}
+
+/* Typing animation for code blocks */
+.typing-cursor {
+  display: inline-block;
+  background-color: #00ff9f;
+  margin-left: 2px;
+  width: 2px;
+  animation: terminalBlink 1s step-start infinite;
 }
 
 .bg-gradient-overlay {
