@@ -32,7 +32,7 @@ try {
             <span class="text-2xl">🎮</span>
           </div>
           <div>
-            <span class="text-xl font-bold">AI Game Engine</span>
+            <span class="text-xl font-bold">AI Mario Level Generator</span>
             <span class="text-xs text-gray-400 block">HackMIT 2025</span>
           </div>
         </div>
@@ -40,6 +40,10 @@ try {
           <a href="#demo" class="hover:text-green-400 transition-colors">Live Demo</a>
           <a href="#features" class="hover:text-green-400 transition-colors">Features</a>
           <a href="#recognition" class="hover:text-green-400 transition-colors">OpenCV Engine</a>
+          <a href="community.html" class="hover:text-green-400 transition-colors flex items-center gap-1">
+            <span class="text-pink-400">🌟</span>
+            <span>Community</span>
+          </a>
           <a href="#tech" class="hover:text-green-400 transition-colors">Tech Stack</a>
           <a href="#mario-engine" class="hover:text-green-400 transition-colors">Mario Engine</a>
           <button class="px-6 py-2 bg-gradient-green-blue rounded-lg hover-glow font-semibold">
@@ -80,37 +84,37 @@ try {
 
           <h1 class="text-5xl md:text-6xl font-bold">
             <span class="block">Draw Your</span>
-            <span class="gradient-text text-6xl md:text-7xl">Game World</span>
+            <span class="gradient-text text-6xl md:text-7xl">Mario Level</span>
             <span class="block text-3xl md:text-4xl text-gray-300 mt-4">
-              AI Transforms It to Playable RPG
+              AI Creates Playable Mario Games
             </span>
           </h1>
 
           <p class="text-xl text-gray-400">
-            Transform hand-drawn sketches into fully playable pixel-style RPG games in under
-            <span class="text-green-400 font-bold">5 minutes</span> using cutting-edge AI technology.
+            Transform hand-drawn sketches into fully playable Mario-style platformer games in under
+            <span class="text-green-400 font-bold">5 minutes</span> using cutting-edge AI and computer vision.
             No coding required - just draw and play!
           </p>
 
           <div class="flex items-center gap-4 text-sm">
             <div class="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full border border-cyan-500/20">
-              <span class="text-cyan-400">⚡</span>
-              <span>Database-Powered Level Persistence</span>
+              <span class="text-cyan-400">👁️</span>
+              <span>OpenCV Shape Detection</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full border border-purple-500/20">
               <span class="text-purple-400">🧠</span>
-              <span>Multi-Stage AI Recognition</span>
+              <span>LLaVA AI Analysis</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-full border border-green-500/20">
-              <span class="text-green-400">🎮</span>
-              <span>Real-time Physics Engine</span>
+              <span class="text-green-400">🍄</span>
+              <span>Mario Physics Engine</span>
             </div>
           </div>
 
           <div class="flex flex-col sm:flex-row gap-4">
-            <button class="px-8 py-4 bg-gradient-green-blue rounded-lg hover-glow text-lg font-semibold">
-              Start Drawing 🎨
-            </button>
+            <a href="https://frontend-ui-alpha-one.vercel.app" target="_blank" class="px-8 py-4 bg-gradient-green-blue rounded-lg hover-glow text-lg font-semibold text-center">
+              Play Mario Game 🍄
+            </a>
             <button class="px-8 py-4 glass-card hover:bg-white/10 transition-colors text-lg">
               Watch Demo ▶️
             </button>
@@ -195,7 +199,7 @@ try {
         <h2 class="text-4xl md:text-5xl font-bold mb-4">
           <span class="gradient-text">See The Magic Happen</span>
         </h2>
-        <p class="text-xl text-gray-400">From sketch to game in real-time</p>
+        <p class="text-xl text-gray-400">From sketch to playable Mario level in real-time</p>
       </div>
 
       <!-- Three-Step Process -->
@@ -206,8 +210,8 @@ try {
             1
           </div>
           <div class="text-4xl mb-4">✏️</div>
-          <h3 class="text-2xl font-bold mb-2">Draw Your Map</h3>
-          <p class="text-gray-400">Sketch your game world on paper or digital canvas</p>
+          <h3 class="text-2xl font-bold mb-2">Draw Your Level</h3>
+          <p class="text-gray-400">Sketch your Mario level with platforms, enemies, and coins</p>
           <div class="mt-4 p-4 bg-black/30 rounded-lg">
             <img src="https://via.placeholder.com/300x200/1a1a1a/34b298?text=Hand+Drawn+Map" alt="Hand-drawn map" class="rounded" />
           </div>
@@ -219,15 +223,15 @@ try {
             2
           </div>
           <div class="text-4xl mb-4">🤖</div>
-          <h3 class="text-2xl font-bold mb-2">OpenCV + AI Recognition</h3>
-          <p class="text-gray-400">Computer vision identifies shapes and AI generates game elements</p>
+          <h3 class="text-2xl font-bold mb-2">OpenCV + LLaVA Analysis</h3>
+          <p class="text-gray-400">Computer vision detects shapes, LLaVA AI creates Mario elements</p>
           <div class="mt-4 p-4 bg-black/30 rounded-lg">
             <div class="space-y-2 font-mono text-sm">
               <div class="text-green-400">✓ OpenCV contour detection...</div>
-              <div class="text-green-400">✓ Triangle → Starting points</div>
-              <div class="text-green-400">✓ Circle → End points</div>
-              <div class="text-green-400">✓ Shapes → Rigid bodies</div>
-              <div class="text-yellow-400 animate-pulse">⚡ Generating pixel art...</div>
+              <div class="text-green-400">✓ Triangle → Mario start position</div>
+              <div class="text-green-400">✓ Circle → Goal/end points</div>
+              <div class="text-green-400">✓ Shapes → Platforms & obstacles</div>
+              <div class="text-yellow-400 animate-pulse">🍄 Generating Mario level...</div>
             </div>
           </div>
         </div>
@@ -238,8 +242,8 @@ try {
             3
           </div>
           <div class="text-4xl mb-4">🎮</div>
-          <h3 class="text-2xl font-bold mb-2">Play Your Game</h3>
-          <p class="text-gray-400">Explore your creation as a pixel RPG game</p>
+          <h3 class="text-2xl font-bold mb-2">Play Mario Level</h3>
+          <p class="text-gray-400">Jump, run and collect coins in your custom Mario world</p>
           <div class="mt-4 p-4 bg-black/30 rounded-lg">
             <img src="https://via.placeholder.com/300x200/1a1a1a/8b5cf6?text=Pixel+RPG+Game" alt="Generated game" class="rounded" />
           </div>
@@ -256,11 +260,11 @@ try {
 
           <div class="aspect-video bg-black/50 rounded-lg flex items-center justify-center">
             <div class="text-center space-y-4">
-              <div class="text-6xl">🎮</div>
-              <p class="text-xl text-gray-400">Interactive Demo Coming Soon</p>
-              <button class="px-6 py-3 bg-gradient-green-blue rounded-lg hover-glow">
-                Request Early Access
-              </button>
+              <div class="text-6xl">🍄</div>
+              <p class="text-xl text-gray-400">Live Mario Game Demo</p>
+              <a href="https://frontend-ui-alpha-one.vercel.app" target="_blank" class="inline-block px-6 py-3 bg-gradient-green-blue rounded-lg hover-glow">
+                Play Now ▶️
+              </a>
             </div>
           </div>
         </div>
@@ -279,54 +283,54 @@ try {
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Feature 1 - Enhanced OpenCV Recognition -->
+        <!-- Feature 1 - Backend-opencv -->
         <div class="glass-card p-8 hover-glow group border border-cyan-500/20">
           <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-cyan-500/30">
-            <span class="text-2xl">🧠</span>
+            <span class="text-2xl">👁️</span>
           </div>
-          <h3 class="text-2xl font-semibold mb-3 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Multi-Stage AI Recognition</h3>
+          <h3 class="text-2xl font-semibold mb-3 bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">OpenCV Shape Detection</h3>
           <p class="text-gray-400">
-            Revolutionary 3-stage pipeline: OpenCV → Sonnet 3.5 → Opus 4 with
-            <span class="text-cyan-400 font-bold">98%+ accuracy</span> and smart model routing
+            Advanced computer vision API that detects shapes and converts them to Mario elements with
+            <span class="text-cyan-400 font-bold">FastAPI</span> backend on Modal cloud platform
           </p>
           <div class="mt-4 space-y-1 text-xs text-gray-500">
-            <div>• <span class="text-cyan-400">Stage 1:</span> OpenCV contour detection</div>
-            <div>• <span class="text-blue-400">Stage 2:</span> Sonnet 3.5 fast analysis</div>
-            <div>• <span class="text-purple-400">Stage 3:</span> Opus 4 complex cases</div>
-            <div>• <span class="text-green-400">Smart:</span> Cost-aware model selection</div>
+            <div>• <span class="text-cyan-400">Triangles:</span> Mario start positions</div>
+            <div>• <span class="text-blue-400">Circles:</span> Goal/end points</div>
+            <div>• <span class="text-purple-400">Shapes:</span> Platforms & obstacles</div>
+            <div>• <span class="text-green-400">Live API:</span> Modal cloud deployment</div>
           </div>
         </div>
 
-        <!-- Feature 2 -->
+        <!-- Feature 2 - Backend_Llava -->
         <div class="glass-card p-8 hover-glow group">
           <div class="w-14 h-14 bg-gradient-blue-purple rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-            <span class="text-2xl">⚡</span>
+            <span class="text-2xl">🧠</span>
           </div>
-          <h3 class="text-2xl font-semibold mb-3">Ultra-Fast Generation</h3>
+          <h3 class="text-2xl font-semibold mb-3">LLaVA AI Analysis</h3>
           <p class="text-gray-400">
-            Powered by Cerebras for instant dialogue and Gemini for rapid asset generation via OpenRouter
+            Large Language and Vision Assistant powered by H100 GPU for advanced hand-drawn image understanding
           </p>
         </div>
 
-        <!-- Feature 3 -->
+        <!-- Feature 3 - Frontend-UI -->
         <div class="glass-card p-8 hover-glow group">
           <div class="w-14 h-14 bg-gradient-purple-green rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-            <span class="text-2xl">🎨</span>
+            <span class="text-2xl">💬</span>
           </div>
-          <h3 class="text-2xl font-semibold mb-3">Pixel Art Generation</h3>
+          <h3 class="text-2xl font-semibold mb-3">Dual AI Chat Interface</h3>
           <p class="text-gray-400">
-            Automatically converts recognized elements into beautiful retro-style pixel art assets
+            Smart chat system with Cerebras Llama 70B for text and Claude 3.5 Sonnet for image recognition
           </p>
         </div>
 
-        <!-- Feature 4 -->
+        <!-- Feature 4 - Frontend_Mario -->
         <div class="glass-card p-8 hover-glow group">
           <div class="w-14 h-14 bg-gradient-green-blue rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-            <span class="text-2xl">💬</span>
+            <span class="text-2xl">🍄</span>
           </div>
-          <h3 class="text-2xl font-semibold mb-3">AI Game Assistant</h3>
+          <h3 class="text-2xl font-semibold mb-3">Mario Game Engine</h3>
           <p class="text-gray-400">
-            Chat with Cerebras AI for gameplay suggestions, quest ideas, and world-building advice
+            Complete Mario-style physics engine with TypeScript, collision detection, and real-time level generation
           </p>
         </div>
 
@@ -769,7 +773,7 @@ try {
         <h2 class="text-4xl md:text-5xl font-bold mb-4">
           <span class="gradient-text">Powerful Tech Stack</span>
         </h2>
-        <p class="text-xl text-gray-400">Built with cutting-edge AI and cloud technologies</p>
+        <p class="text-xl text-gray-400">Built with cutting-edge AI, computer vision, and cloud technologies</p>
       </div>
 
       <!-- Architecture Diagram -->
@@ -787,17 +791,19 @@ try {
                 </div>
               </div>
               <div class="flex items-center gap-3 p-3 bg-black/30 rounded-lg hover:bg-black/40 transition-colors">
-                <img src="/logos/nextjs-logo.svg" alt="Next.js" class="w-8 h-8 object-contain invert" />
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded flex items-center justify-center text-white font-bold text-xs">
+                  TS
+                </div>
                 <div>
-                  <span class="font-semibold">Next.js</span>
-                  <span class="text-xs text-gray-400 block">React Framework</span>
+                  <span class="font-semibold">TypeScript</span>
+                  <span class="text-xs text-gray-400 block">React + Vite</span>
                 </div>
               </div>
               <div class="flex items-center gap-3 p-3 bg-black/30 rounded-lg hover:bg-black/40 transition-colors">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="Canvas" class="w-8 h-8 object-contain" />
                 <div>
-                  <span class="font-semibold">Canvas API</span>
-                  <span class="text-xs text-gray-400 block">Drawing Interface</span>
+                  <span class="font-semibold">Mario Engine</span>
+                  <span class="text-xs text-gray-400 block">HTML5 Canvas Game</span>
                 </div>
               </div>
             </div>
@@ -869,25 +875,27 @@ try {
             <div class="space-y-2">
               <div class="flex items-center gap-3 p-3 bg-black/30 rounded-lg hover:bg-black/40 transition-colors">
                 <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded flex items-center justify-center text-white font-bold">
-                  C
+                  🦙
                 </div>
                 <div>
-                  <span class="font-semibold">Cerebras</span>
-                  <span class="text-xs text-gray-400 block">Ultra-fast Dialogue</span>
+                  <span class="font-semibold">Cerebras Llama 70B</span>
+                  <span class="text-xs text-gray-400 block">Fast Text Chat</span>
                 </div>
               </div>
               <div class="flex items-center gap-3 p-3 bg-black/30 rounded-lg hover:bg-black/40 transition-colors">
                 <img src="/logos/anthropic-logo.png" alt="Claude" class="w-8 h-8 object-contain rounded" />
                 <div>
-                  <span class="font-semibold">Claude</span>
-                  <span class="text-xs text-gray-400 block">Vision & Logic</span>
+                  <span class="font-semibold">Claude 3.5 Sonnet</span>
+                  <span class="text-xs text-gray-400 block">Image Recognition</span>
                 </div>
               </div>
               <div class="flex items-center gap-3 p-3 bg-black/30 rounded-lg hover:bg-black/40 transition-colors">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg" alt="Gemini" class="w-8 h-8 object-contain" />
+                <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-600 rounded flex items-center justify-center text-white font-bold text-xs">
+                  👁️
+                </div>
                 <div>
-                  <span class="font-semibold">Gemini</span>
-                  <span class="text-xs text-gray-400 block">Image Generation</span>
+                  <span class="font-semibold">LLaVA 1.5</span>
+                  <span class="text-xs text-gray-400 block">Vision-Language AI</span>
                 </div>
               </div>
             </div>
@@ -1764,41 +1772,11 @@ console.log('📊 Performance:', {
   stylesheets: Array.from(document.styleSheets).length
 });
 
-// Show debug panel in development
-if (window.location.hostname === 'localhost' || window.location.hostname.includes('vercel.app')) {
-  const debugPanel = document.createElement('div');
-  debugPanel.style.cssText = `
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: rgba(0,0,0,0.8);
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    font-family: monospace;
-    font-size: 12px;
-    z-index: 9999;
-    max-width: 300px;
-  `;
-
-  debugPanel.innerHTML = `
-    <div>🚀 Status: Loaded</div>
-    <div>📍 Host: ${window.location.hostname}</div>
-    <div>⏰ Load: ${Math.round(performance.now())}ms</div>
-    <div>🌐 UA: ${navigator.userAgent.split(' ')[0]}</div>
-    <div style="margin-top: 5px; font-size: 10px; opacity: 0.7;">
-      Debug Panel - Vercel Deployment Check
-    </div>
-  `;
-
-  document.body.appendChild(debugPanel);
-
-  // Auto-hide debug panel after 10 seconds
-  setTimeout(() => {
-    debugPanel.style.opacity = '0.3';
-    setTimeout(() => debugPanel.remove(), 2000);
-  }, 10000);
-}
+// Log debug info to console only
+console.log('✅ Application loaded successfully');
+console.log('🏠 Host:', window.location.hostname);
+console.log('⏰ Load time:', Math.round(performance.now()) + 'ms');
+console.log('🌐 User Agent:', navigator.userAgent.split(' ')[0]);
 
 } catch (error) {
   console.error('🚨 Critical error in main.ts:', error);

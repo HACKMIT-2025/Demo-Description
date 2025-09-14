@@ -1,0 +1,673 @@
+// Community Playground - Main Application
+// AI Game Creation Platform - Community Features
+import './community.css';
+import { communityAPI, type Game, type GameFilters, type CommunityStats } from './database/client';
+
+class CommunityApp {
+  private currentFilters: GameFilters = { sort_by: 'latest', limit: 12 };
+  private games: Game[] = [];
+  private stats: CommunityStats | null = null;
+  private isLoading = false;
+  private searchTimeout: NodeJS.Timeout | null = null;
+
+  constructor() {
+    this.init();
+  }
+
+  private async init() {
+    this.render();
+    await this.loadInitialData();
+    this.attachEventListeners();
+  }
+
+  private async loadInitialData() {
+    this.isLoading = true;
+    this.updateLoadingState();
+
+    try {
+      // Load community stats and initial games in parallel
+      const [statsResult, gamesResult] = await Promise.all([
+        communityAPI.getCommunityStats(),
+        communityAPI.getGames(this.currentFilters)
+      ]);
+
+      this.stats = statsResult;
+      this.games = gamesResult.games;
+
+      this.updateStats();
+      this.updateGamesGrid();
+    } catch (error) {
+      console.error('Failed to load community data:', error);
+      this.showError('Failed to load community data. Please try again.');
+    } finally {
+      this.isLoading = false;
+      this.updateLoadingState();
+    }
+  }
+
+  private render() {
+    const app = document.getElementById('community-app')!;
+    app.innerHTML = `
+      <!-- Navigation Bar -->
+      <nav class="fixed top-0 w-full z-50 glass-card border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex items-center justify-between h-16">
+            <div class="flex items-center gap-4">
+              <a href="/" class="text-xl font-bold cyberpunk-text">🎮 AI Game Creator</a>
+              <span class="text-gray-400">•</span>
+              <span class="text-lg font-semibold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                Community Playground
+              </span>
+            </div>
+            <div class="flex items-center gap-4">
+              <button class="px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg font-semibold hover:scale-105 transition-transform">
+                🎨 Create Map
+              </button>
+              <button class="p-2 glass-card hover:bg-white/10 transition-colors rounded-lg">
+                👤
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="pt-16 min-h-screen">
+        <!-- Hero Section -->
+        <section class="py-16 relative">
+          <!-- Animated Background -->
+          <div class="absolute inset-0 -z-10">
+            <div class="absolute top-1/4 left-10 w-80 h-80 bg-gradient-to-br from-pink-500/15 to-purple-500/10 rounded-full blur-3xl animate-float"></div>
+            <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-gradient-to-br from-cyan-500/15 to-blue-500/10 rounded-full blur-3xl animate-float" style="animation-delay: 1s;"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent opacity-30"
+                 style="background-image: radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.1) 1px, transparent 1px), radial-gradient(circle at 75% 75%, rgba(52, 178, 152, 0.1) 1px, transparent 1px);
+                        background-size: 50px 50px;"></div>
+          </div>
+
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="text-center mb-12">
+              <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                <span class="bg-gradient-to-r from-pink-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent animate-holographic">
+                  🌟 Community Playground
+                </span>
+              </h1>
+              <p class="text-xl text-gray-400 mb-8 max-w-3xl mx-auto">
+                Discover, share, and remix amazing AI-generated game maps from our global community of creators
+              </p>
+
+              <!-- Community Stats -->
+              <div id="community-stats" class="flex justify-center gap-6 text-sm flex-wrap">
+                <div class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-full border border-pink-500/30">
+                  <span class="text-pink-400">🎨</span>
+                  <span class="text-pink-300" id="stat-games">Loading...</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-full border border-purple-500/30">
+                  <span class="text-purple-400">👥</span>
+                  <span class="text-purple-300" id="stat-creators">Loading...</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full border border-cyan-500/30">
+                  <span class="text-cyan-400">❤️</span>
+                  <span class="text-cyan-300" id="stat-likes">Loading...</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-green-500/20 rounded-full border border-blue-500/30">
+                  <span class="text-blue-400">🎮</span>
+                  <span class="text-blue-300" id="stat-plays">Loading...</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="mb-12">
+              <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                <!-- Search Bar -->
+                <div class="relative flex-1 max-w-md">
+                  <input
+                    type="text"
+                    id="search-input"
+                    placeholder="Search maps, creators, tags..."
+                    class="w-full px-4 py-3 pl-12 search-input rounded-xl text-white placeholder-gray-400 focus:outline-none"
+                  />
+                  <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    🔍
+                  </div>
+                  <div id="search-suggestions" class="absolute top-full left-0 right-0 mt-2 hidden"></div>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="flex gap-2 flex-wrap">
+                  <button class="filter-tab active px-4 py-2 rounded-lg transition-all" data-filter="latest">
+                    🆕 Latest
+                  </button>
+                  <button class="filter-tab px-4 py-2 rounded-lg transition-all" data-filter="trending">
+                    🔥 Trending
+                  </button>
+                  <button class="filter-tab px-4 py-2 rounded-lg transition-all" data-filter="most_liked">
+                    ❤️ Most Liked
+                  </button>
+                  <button class="filter-tab px-4 py-2 rounded-lg transition-all" data-filter="most_played">
+                    🎮 Most Played
+                  </button>
+                  <button class="filter-tab px-4 py-2 rounded-lg transition-all" data-filter="featured">
+                    ⭐ Featured
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Games Grid Section -->
+        <section class="pb-20">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Loading State -->
+            <div id="loading-state" class="hidden text-center py-12">
+              <div class="inline-flex items-center gap-3">
+                <div class="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                <span class="text-gray-400">Loading amazing maps...</span>
+              </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="hidden text-center py-12">
+              <div class="text-red-400 mb-4">⚠️ Something went wrong</div>
+              <button id="retry-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+                Try Again
+              </button>
+            </div>
+
+            <!-- Games Grid -->
+            <div id="games-grid" class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <!-- Game cards will be inserted here -->
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-12">
+              <button id="load-more-btn" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg font-semibold hover:scale-105 transition-transform">
+                Load More Maps
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center">
+            <p class="text-gray-400">
+              Built with ❤️ by the AI Game Creator community •
+              <a href="/" class="text-cyan-400 hover:text-cyan-300 transition-colors">Back to Main Site</a>
+            </p>
+          </div>
+        </div>
+      </footer>
+
+      <!-- Share Modal -->
+      <div id="share-modal" class="fixed inset-0 z-50 hidden modal-overlay" style="background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="modal-content bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 max-w-md w-full border border-gray-700">
+            <div class="text-center mb-6">
+              <h3 class="text-xl font-bold mb-2">Share This Amazing Map! 🚀</h3>
+              <p class="text-gray-400 text-sm" id="share-game-title">Game Title</p>
+            </div>
+
+            <div class="space-y-3">
+              <button class="share-option w-full p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors flex items-center gap-3" data-platform="twitter">
+                🐦 Share on Twitter
+              </button>
+              <button class="share-option w-full p-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors flex items-center gap-3" data-platform="discord">
+                💬 Share on Discord
+              </button>
+              <button class="share-option w-full p-3 bg-orange-600 hover:bg-orange-700 rounded-lg transition-colors flex items-center gap-3" data-platform="reddit">
+                🤖 Share on Reddit
+              </button>
+              <button class="share-option w-full p-3 bg-gray-600 hover:bg-gray-700 rounded-lg transition-colors flex items-center gap-3" data-platform="copy">
+                📋 Copy Link
+              </button>
+            </div>
+
+            <button id="close-share-modal" class="w-full mt-4 p-2 text-gray-400 hover:text-white transition-colors">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  private updateStats() {
+    if (!this.stats) return;
+
+    const formatNumber = (num: number) => {
+      if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+      if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+      return num.toString();
+    };
+
+    document.getElementById('stat-games')!.textContent = `${formatNumber(this.stats.total_games)} Maps Created`;
+    document.getElementById('stat-creators')!.textContent = `${formatNumber(this.stats.total_creators)} Active Creators`;
+    document.getElementById('stat-likes')!.textContent = `${formatNumber(this.stats.total_likes)} Total Likes`;
+    document.getElementById('stat-plays')!.textContent = `${formatNumber(this.stats.total_plays)} Games Played`;
+  }
+
+  private updateGamesGrid() {
+    const grid = document.getElementById('games-grid')!;
+    grid.innerHTML = this.games.map(game => this.createGameCard(game)).join('');
+    this.attachGameCardListeners();
+  }
+
+  private createGameCard(game: Game): string {
+    const formatNumber = (num: number) => {
+      if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+      if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+      return num.toString();
+    };
+
+    const getBadge = (game: Game) => {
+      if (game.is_trending) return '<div class="absolute top-2 right-2 trending-badge text-white text-xs px-2 py-1 rounded-full font-bold">🔥 HOT</div>';
+      if (game.is_featured) return '<div class="absolute top-2 right-2 featured-badge text-white text-xs px-2 py-1 rounded-full font-bold">⭐ FEATURED</div>';
+      const hoursAgo = Math.floor((Date.now() - new Date(game.created_at).getTime()) / (1000 * 60 * 60));
+      if (hoursAgo < 24) return '<div class="absolute top-2 right-2 new-badge text-white text-xs px-2 py-1 rounded-full font-bold">✨ NEW</div>';
+      return '';
+    };
+
+    const getDifficultyColor = (difficulty: string) => {
+      const colors = {
+        easy: 'text-green-400',
+        medium: 'text-yellow-400',
+        hard: 'text-orange-400',
+        extreme: 'text-red-400'
+      };
+      return colors[difficulty as keyof typeof colors] || 'text-gray-400';
+    };
+
+    return `
+      <div class="community-card rounded-xl p-4 hover-lift group" data-game-id="${game.id}">
+        <!-- Game Thumbnail -->
+        <div class="relative overflow-hidden rounded-lg mb-4 map-thumbnail">
+          <div class="aspect-square bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center border border-purple-500/30">
+            <div class="text-center">
+              <span class="text-4xl mb-2 block">${this.getGameEmoji(game.tags[0])}</span>
+              <span class="text-sm text-purple-300">${game.title}</span>
+            </div>
+          </div>
+          ${getBadge(game)}
+
+          <!-- Hover Overlay -->
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <button class="play-btn px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg font-bold hover:scale-105 transition-transform"
+                    data-map-data-url="${game.map_data_url}">
+              ▶️ PLAY NOW
+            </button>
+          </div>
+        </div>
+
+        <!-- Game Info -->
+        <div class="space-y-3">
+          <!-- Title and Difficulty -->
+          <div class="flex items-start justify-between">
+            <h3 class="font-bold text-lg leading-tight flex-1">${game.title}</h3>
+            <span class="text-xs ${getDifficultyColor(game.difficulty_level)} ml-2 whitespace-nowrap">
+              ${game.difficulty_level.toUpperCase()}
+            </span>
+          </div>
+
+          <!-- Creator Info -->
+          <div class="flex items-center gap-2">
+            <div class="creator-avatar w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+              <span class="text-xs">${this.getCreatorEmoji(game.creator_name)}</span>
+            </div>
+            <div>
+              <p class="font-semibold text-sm text-purple-300">@${game.creator_name.replace(' ', '').toLowerCase()}</p>
+              <p class="text-xs text-gray-400">${this.formatTimeAgo(game.created_at)}</p>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <p class="text-sm text-gray-300 line-clamp-2">
+            ${game.description || 'An amazing AI-generated game world waiting to be explored!'}
+          </p>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap gap-1">
+            ${game.tags.slice(0, 3).map(tag =>
+              `<span class="text-xs px-2 py-1 bg-white/10 rounded-full text-gray-300">#${tag}</span>`
+            ).join('')}
+            ${game.tags.length > 3 ? `<span class="text-xs text-gray-400">+${game.tags.length - 3} more</span>` : ''}
+          </div>
+
+          <!-- Social Actions -->
+          <div class="flex items-center justify-between pt-3 border-t border-white/10">
+            <div class="flex gap-4">
+              <button class="social-btn like-btn flex items-center gap-1 text-pink-400 hover:text-pink-300 transition-colors group"
+                      data-game-id="${game.id}">
+                <span class="text-lg group-hover:scale-125 transition-transform">❤️</span>
+                <span class="text-sm font-semibold like-count">${formatNumber(game.likes_count)}</span>
+              </button>
+              <button class="social-btn repost-btn flex items-center gap-1 text-purple-400 hover:text-purple-300 transition-colors group"
+                      data-game-id="${game.id}">
+                <span class="text-lg group-hover:scale-125 transition-transform">🔄</span>
+                <span class="text-sm font-semibold repost-count">${formatNumber(game.reposts_count)}</span>
+              </button>
+              <button class="social-btn share-btn flex items-center gap-1 text-cyan-400 hover:text-cyan-300 transition-colors group"
+                      data-game-id="${game.id}" data-game-title="${game.title}">
+                <span class="text-lg group-hover:scale-125 transition-transform">📤</span>
+                <span class="text-sm font-semibold share-count">${formatNumber(game.shares_count)}</span>
+              </button>
+            </div>
+
+            <!-- Play Count -->
+            <div class="flex items-center gap-1 text-gray-400 text-sm">
+              <span>🎮</span>
+              <span>${formatNumber(game.plays_count)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  private getGameEmoji(tag: string): string {
+    const emojis: Record<string, string> = {
+      fantasy: '🏰',
+      cyberpunk: '🌆',
+      forest: '🌲',
+      desert: '🏜️',
+      space: '🚀',
+      underwater: '🌊',
+      castle: '🏰',
+      city: '🏙️',
+      temple: '⚱️',
+      racing: '🏎️',
+      adventure: '🗺️',
+      rpg: '⚔️',
+      puzzle: '🧩',
+      platform: '🎮'
+    };
+    return emojis[tag] || '🎮';
+  }
+
+  private getCreatorEmoji(name: string): string {
+    const emojis = ['👑', '🤖', '🧚', '⚱️', '👨‍🚀', '🧜‍♀️', '🧙', '🦸', '🎨', '💎'];
+    const index = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return emojis[index % emojis.length];
+  }
+
+  private formatTimeAgo(dateString: string): string {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+
+    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+    return `${Math.floor(diffInMinutes / 1440)}d ago`;
+  }
+
+  private updateLoadingState() {
+    const loadingState = document.getElementById('loading-state')!;
+    const gamesGrid = document.getElementById('games-grid')!;
+
+    if (this.isLoading) {
+      loadingState.classList.remove('hidden');
+      gamesGrid.classList.add('opacity-50');
+    } else {
+      loadingState.classList.add('hidden');
+      gamesGrid.classList.remove('opacity-50');
+    }
+  }
+
+  private showError(message: string) {
+    const errorState = document.getElementById('error-state')!;
+    errorState.classList.remove('hidden');
+    errorState.querySelector('div')!.textContent = `⚠️ ${message}`;
+  }
+
+  private attachEventListeners() {
+    // Filter tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', async (e) => {
+        const target = e.target as HTMLElement;
+        const filter = target.dataset.filter as string;
+
+        // Update active state
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        target.classList.add('active');
+
+        // Update filters and reload
+        if (filter === 'featured') {
+          this.currentFilters = { ...this.currentFilters, sort_by: 'latest', featured_only: true };
+        } else if (filter === 'trending') {
+          this.currentFilters = { ...this.currentFilters, sort_by: 'trending', trending_only: true };
+        } else {
+          this.currentFilters = {
+            ...this.currentFilters,
+            sort_by: filter as any,
+            featured_only: undefined,
+            trending_only: undefined
+          };
+        }
+
+        await this.loadGames();
+      });
+    });
+
+    // Search input
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    searchInput.addEventListener('input', (e) => {
+      const target = e.target as HTMLInputElement;
+
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+
+      this.searchTimeout = setTimeout(async () => {
+        this.currentFilters.search = target.value.trim() || undefined;
+        await this.loadGames();
+      }, 300);
+    });
+
+    // Load more button
+    document.getElementById('load-more-btn')!.addEventListener('click', async () => {
+      const currentCount = this.games.length;
+      this.currentFilters.offset = currentCount;
+
+      const result = await communityAPI.getGames(this.currentFilters);
+      this.games.push(...result.games);
+      this.updateGamesGrid();
+    });
+
+    // Retry button
+    document.getElementById('retry-btn')!.addEventListener('click', async () => {
+      document.getElementById('error-state')!.classList.add('hidden');
+      await this.loadInitialData();
+    });
+
+    // Share modal
+    document.getElementById('close-share-modal')!.addEventListener('click', () => {
+      this.closeShareModal();
+    });
+
+    document.getElementById('share-modal')!.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        this.closeShareModal();
+      }
+    });
+
+    document.querySelectorAll('.share-option').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const platform = (e.currentTarget as HTMLElement).dataset.platform!;
+        await this.handleShare(platform);
+      });
+    });
+  }
+
+  private attachGameCardListeners() {
+    // Like buttons
+    document.querySelectorAll('.like-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const gameId = (e.currentTarget as HTMLElement).dataset.gameId!;
+        await this.handleLike(gameId, e.currentTarget as HTMLElement);
+      });
+    });
+
+    // Repost buttons
+    document.querySelectorAll('.repost-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const gameId = (e.currentTarget as HTMLElement).dataset.gameId!;
+        await this.handleRepost(gameId, e.currentTarget as HTMLElement);
+      });
+    });
+
+    // Share buttons
+    document.querySelectorAll('.share-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const gameId = (e.currentTarget as HTMLElement).dataset.gameId!;
+        const gameTitle = (e.currentTarget as HTMLElement).dataset.gameTitle!;
+        this.openShareModal(gameId, gameTitle);
+      });
+    });
+
+    // Play buttons
+    document.querySelectorAll('.play-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const mapDataUrl = (e.currentTarget as HTMLElement).dataset.mapDataUrl!;
+        const gameId = (e.currentTarget as HTMLElement).closest('[data-game-id]') as HTMLElement;
+
+        // Track play
+        if (gameId) {
+          await communityAPI.trackPlay(gameId.dataset.gameId!);
+        }
+
+        // Open Mario frontend with JSON URL parameter
+        const marioFrontendUrl = `http://frontend-mario.vercel.app/play?json=${encodeURIComponent(mapDataUrl)}`;
+        window.open(marioFrontendUrl, '_blank');
+      });
+    });
+  }
+
+  private async loadGames() {
+    this.isLoading = true;
+    this.updateLoadingState();
+
+    try {
+      const result = await communityAPI.getGames(this.currentFilters);
+      this.games = result.games;
+      this.updateGamesGrid();
+    } catch (error) {
+      console.error('Failed to load games:', error);
+      this.showError('Failed to load games. Please try again.');
+    } finally {
+      this.isLoading = false;
+      this.updateLoadingState();
+    }
+  }
+
+  private async handleLike(gameId: string, buttonElement: HTMLElement) {
+    try {
+      const isLiked = buttonElement.classList.contains('liked');
+
+      if (isLiked) {
+        const result = await communityAPI.unlikeGame(gameId);
+        buttonElement.classList.remove('liked');
+        buttonElement.querySelector('.like-count')!.textContent = this.formatNumber(result.likes_count);
+      } else {
+        const result = await communityAPI.likeGame(gameId);
+        buttonElement.classList.add('liked');
+        buttonElement.querySelector('.like-count')!.textContent = this.formatNumber(result.likes_count);
+      }
+    } catch (error) {
+      console.error('Failed to toggle like:', error);
+    }
+  }
+
+  private async handleRepost(gameId: string, buttonElement: HTMLElement) {
+    try {
+      const result = await communityAPI.repostGame(gameId);
+      buttonElement.classList.add('reposted');
+      buttonElement.querySelector('.repost-count')!.textContent = this.formatNumber(result.reposts_count);
+
+      // Show success message
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-20 right-4 z-50 bg-purple-600 text-white px-4 py-2 rounded-lg animate-bounce';
+      notification.textContent = '🔄 Map forked! Create your remix';
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    } catch (error) {
+      console.error('Failed to repost:', error);
+    }
+  }
+
+  private openShareModal(gameId: string, gameTitle: string) {
+    const modal = document.getElementById('share-modal')!;
+    document.getElementById('share-game-title')!.textContent = gameTitle;
+    modal.classList.remove('hidden');
+    modal.classList.add('show');
+    modal.dataset.gameId = gameId;
+  }
+
+  private closeShareModal() {
+    const modal = document.getElementById('share-modal')!;
+    modal.classList.remove('show');
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 300);
+  }
+
+  private async handleShare(platform: string) {
+    const modal = document.getElementById('share-modal')!;
+    const gameId = modal.dataset.gameId!;
+    const gameTitle = document.getElementById('share-game-title')!.textContent!;
+
+    try {
+      await communityAPI.shareGame(gameId, platform);
+
+      const gameUrl = `https://community.ai-creator.com/play/${gameId}`;
+
+      if (platform === 'copy') {
+        await navigator.clipboard.writeText(gameUrl);
+        this.showNotification('📋 Link copied to clipboard!');
+      } else if (platform === 'twitter') {
+        const text = `Check out this amazing AI-generated game: "${gameTitle}"`;
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(gameUrl)}`, '_blank');
+      } else if (platform === 'discord') {
+        await navigator.clipboard.writeText(`${gameTitle} - ${gameUrl}`);
+        this.showNotification('📋 Discord message copied! Paste it in your server.');
+      } else if (platform === 'reddit') {
+        window.open(`https://reddit.com/submit?title=${encodeURIComponent(gameTitle)}&url=${encodeURIComponent(gameUrl)}`, '_blank');
+      }
+
+      this.closeShareModal();
+    } catch (error) {
+      console.error('Failed to share:', error);
+      this.showNotification('❌ Failed to share. Please try again.');
+    }
+  }
+
+  private showNotification(message: string) {
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-20 right-4 z-50 bg-cyan-600 text-white px-4 py-2 rounded-lg animate-bounce';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
+  }
+
+  private formatNumber(num: number): string {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toString();
+  }
+}
+
+// Initialize the app
+new CommunityApp();
