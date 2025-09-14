@@ -112,7 +112,7 @@ try {
           </div>
 
           <div class="flex flex-col sm:flex-row gap-4">
-            <a href="https://frontend-ui-alpha-one.vercel.app" target="_blank" class="px-8 py-4 bg-gradient-green-blue rounded-lg hover-glow text-lg font-semibold text-center">
+            <a href="https://frontend-mario.vercel.app" target="_blank" class="px-8 py-4 bg-gradient-green-blue rounded-lg hover-glow text-lg font-semibold text-center">
               Play Mario Game 🍄
             </a>
             <button class="px-8 py-4 glass-card hover:bg-white/10 transition-colors text-lg">
@@ -258,14 +258,21 @@ try {
             <span class="text-red-400 font-semibold">LIVE DEMO</span>
           </div>
 
-          <div class="aspect-video bg-black/50 rounded-lg flex items-center justify-center">
-            <div class="text-center space-y-4">
-              <div class="text-6xl">🍄</div>
-              <p class="text-xl text-gray-400">Live Mario Game Demo</p>
-              <a href="https://frontend-ui-alpha-one.vercel.app" target="_blank" class="inline-block px-6 py-3 bg-gradient-green-blue rounded-lg hover-glow">
-                Play Now ▶️
-              </a>
+          <div class="aspect-video bg-black/50 rounded-lg overflow-hidden relative">
+            <div class="absolute top-4 left-4 z-10 bg-black/80 backdrop-blur-sm rounded-lg px-3 py-2">
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                <span class="text-red-400 font-semibold text-sm">LIVE MARIO GAME</span>
+              </div>
             </div>
+            <iframe
+              src="https://frontend-mario.vercel.app/embed"
+              class="w-full h-full border-0 rounded-lg"
+              allow="fullscreen; autoplay; encrypted-media"
+              loading="lazy"
+              title="Mario Game Demo"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock">
+            </iframe>
           </div>
         </div>
       </div>
