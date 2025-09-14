@@ -1,8 +1,28 @@
 import './style.css';
 
+// Debug information for Vercel deployment
+console.log('🚀 Application starting...');
+console.log('Environment:', {
+  userAgent: navigator.userAgent,
+  location: window.location.href,
+  timestamp: new Date().toISOString(),
+  buildTime: '__BUILD_TIME__' // Will be replaced during build
+});
+
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
-app.innerHTML = `
+// Global error handler for debugging
+window.addEventListener('error', (event) => {
+  console.error('🚨 Global error:', event.error);
+  console.error('📍 Error location:', event.filename, event.lineno, event.colno);
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('🚨 Unhandled promise rejection:', event.reason);
+});
+
+try {
+  app.innerHTML = `
   <!-- Navigation -->
   <nav class="fixed top-0 w-full z-50 glass-card rounded-none border-x-0 border-t-0 transition-all duration-300">
     <div class="max-w-7xl mx-auto section-padding py-4">
@@ -1342,3 +1362,79 @@ function initializeCodeTyping() {
 
 // Initialize code typing after DOM is loaded
 setTimeout(initializeCodeTyping, 100);
+
+// Additional debug info
+console.log('✅ DOM content loaded');
+console.log('📊 Performance:', {
+  loadTime: performance.now(),
+  memoryUsed: (performance as any).memory?.usedJSHeapSize || 'N/A',
+  scripts: Array.from(document.scripts).map(s => s.src),
+  stylesheets: Array.from(document.styleSheets).length
+});
+
+// Show debug panel in development
+if (window.location.hostname === 'localhost' || window.location.hostname.includes('vercel.app')) {
+  const debugPanel = document.createElement('div');
+  debugPanel.style.cssText = `
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 9999;
+    max-width: 300px;
+  `;
+
+  debugPanel.innerHTML = `
+    <div>🚀 Status: Loaded</div>
+    <div>📍 Host: ${window.location.hostname}</div>
+    <div>⏰ Load: ${Math.round(performance.now())}ms</div>
+    <div>🌐 UA: ${navigator.userAgent.split(' ')[0]}</div>
+    <div style="margin-top: 5px; font-size: 10px; opacity: 0.7;">
+      Debug Panel - Vercel Deployment Check
+    </div>
+  `;
+
+  document.body.appendChild(debugPanel);
+
+  // Auto-hide debug panel after 10 seconds
+  setTimeout(() => {
+    debugPanel.style.opacity = '0.3';
+    setTimeout(() => debugPanel.remove(), 2000);
+  }, 10000);
+}
+
+} catch (error) {
+  console.error('🚨 Critical error in main.ts:', error);
+
+  // Show error message to user
+  const errorDiv = document.createElement('div');
+  errorDiv.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ff4444;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    font-family: monospace;
+    z-index: 10000;
+    text-align: center;
+  `;
+
+  errorDiv.innerHTML = `
+    <h3>⚠️ 应用加载错误</h3>
+    <p>检测到错误，正在诊断...</p>
+    <p><small>${error}</small></p>
+    <p style="margin-top: 10px; font-size: 12px;">
+      请检查浏览器控制台获取详细信息
+    </p>
+  `;
+
+  document.body.appendChild(errorDiv);
+}
