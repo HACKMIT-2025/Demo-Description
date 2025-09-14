@@ -6,6 +6,7 @@ export interface Game {
   title: string;
   description?: string;
   game_url: string;
+  map_data_url?: string;
   thumbnail_url?: string;
   creator_name: string;
   likes_count: number;
@@ -82,6 +83,7 @@ export class NeonDatabaseClient {
           title VARCHAR(200) NOT NULL,
           description TEXT,
           game_url TEXT NOT NULL UNIQUE,
+          map_data_url TEXT,
           thumbnail_url TEXT,
           creator_name VARCHAR(100) NOT NULL,
           likes_count INTEGER DEFAULT 0,
@@ -115,13 +117,13 @@ export class NeonDatabaseClient {
   async insertSampleData(): Promise<boolean> {
     try {
       const insertQuery = `
-        INSERT INTO games (title, description, game_url, thumbnail_url, creator_name, likes_count, shares_count, plays_count, reposts_count, tags, difficulty_level, is_featured, is_trending) VALUES
-        ('Fantasy Castle Realm', 'Epic fantasy castle with multiple towers, secret passages, and dragon lairs. Perfect for RPG adventures!', 'https://game.ai-creator.com/castle-123', '/thumbnails/castle.jpg', 'Dragon Master', 1234, 347, 5678, 89, ARRAY['fantasy', 'castle', 'rpg', 'adventure'], 'medium', TRUE, TRUE),
-        ('Neon Cyber City', 'Futuristic cyberpunk city with neon lights, flying cars, and high-tech obstacles. Race through the digital matrix!', 'https://game.ai-creator.com/cyber-456', '/thumbnails/cyber.jpg', 'Cyber Creator', 856, 234, 3421, 67, ARRAY['cyberpunk', 'city', 'racing', 'futuristic'], 'hard', FALSE, FALSE),
-        ('Enchanted Forest', 'Mystical forest filled with magical creatures, hidden treasures, and ancient trees that tell stories.', 'https://game.ai-creator.com/forest-789', '/thumbnails/forest.jpg', 'Nature Wizard', 2134, 456, 7890, 123, ARRAY['fantasy', 'forest', 'magic', 'exploration'], 'easy', TRUE, FALSE),
-        ('Ancient Desert Temple', 'Mysterious desert temple with deadly traps, hidden chambers, and ancient Egyptian puzzles to solve.', 'https://game.ai-creator.com/temple-012', '/thumbnails/temple.jpg', 'Pharaoh Builder', 743, 189, 4567, 45, ARRAY['desert', 'temple', 'puzzle', 'adventure'], 'extreme', FALSE, FALSE),
-        ('Orbital Space Station', 'Zero-gravity space station with multiple modules, airlocks, and spectacular views of distant planets.', 'https://game.ai-creator.com/space-345', '/thumbnails/space.jpg', 'Space Explorer', 934, 267, 3456, 78, ARRAY['space', 'sci-fi', 'exploration', 'zero-gravity'], 'medium', FALSE, FALSE),
-        ('Atlantis City', 'Breathtaking underwater city with coral structures, sea creatures, and ancient underwater civilization.', 'https://game.ai-creator.com/atlantis-678', '/thumbnails/atlantis.jpg', 'Ocean Builder', 1567, 312, 6789, 95, ARRAY['underwater', 'atlantis', 'exploration', 'adventure'], 'medium', FALSE, FALSE)
+        INSERT INTO games (title, description, game_url, map_data_url, thumbnail_url, creator_name, likes_count, shares_count, plays_count, reposts_count, tags, difficulty_level, is_featured, is_trending) VALUES
+        ('Fantasy Castle Realm', 'Epic fantasy castle with multiple towers, secret passages, and dragon lairs. Perfect for RPG adventures!', 'https://game.ai-creator.com/castle-123', 'https://cdn.ai-creator.com/maps/castle-realm.json', '/thumbnails/castle.jpg', 'Dragon Master', 1234, 347, 5678, 89, ARRAY['fantasy', 'castle', 'rpg', 'adventure'], 'medium', TRUE, TRUE),
+        ('Neon Cyber City', 'Futuristic cyberpunk city with neon lights, flying cars, and high-tech obstacles. Race through the digital matrix!', 'https://game.ai-creator.com/cyber-456', 'https://cdn.ai-creator.com/maps/cyber-city.json', '/thumbnails/cyber.jpg', 'Cyber Creator', 856, 234, 3421, 67, ARRAY['cyberpunk', 'city', 'racing', 'futuristic'], 'hard', FALSE, FALSE),
+        ('Enchanted Forest', 'Mystical forest filled with magical creatures, hidden treasures, and ancient trees that tell stories.', 'https://game.ai-creator.com/forest-789', 'https://cdn.ai-creator.com/maps/enchanted-forest.json', '/thumbnails/forest.jpg', 'Nature Wizard', 2134, 456, 7890, 123, ARRAY['fantasy', 'forest', 'magic', 'exploration'], 'easy', TRUE, FALSE),
+        ('Ancient Desert Temple', 'Mysterious desert temple with deadly traps, hidden chambers, and ancient Egyptian puzzles to solve.', 'https://game.ai-creator.com/temple-012', 'https://cdn.ai-creator.com/maps/desert-temple.json', '/thumbnails/temple.jpg', 'Pharaoh Builder', 743, 189, 4567, 45, ARRAY['desert', 'temple', 'puzzle', 'adventure'], 'extreme', FALSE, FALSE),
+        ('Orbital Space Station', 'Zero-gravity space station with multiple modules, airlocks, and spectacular views of distant planets.', 'https://game.ai-creator.com/space-345', 'https://cdn.ai-creator.com/maps/space-adventure.json', '/thumbnails/space.jpg', 'Space Explorer', 934, 267, 3456, 78, ARRAY['space', 'sci-fi', 'exploration', 'zero-gravity'], 'medium', FALSE, FALSE),
+        ('Atlantis City', 'Breathtaking underwater city with coral structures, sea creatures, and ancient underwater civilization.', 'https://game.ai-creator.com/atlantis-678', 'https://cdn.ai-creator.com/maps/underwater-paradise.json', '/thumbnails/atlantis.jpg', 'Ocean Builder', 1567, 312, 6789, 95, ARRAY['underwater', 'atlantis', 'exploration', 'adventure'], 'medium', FALSE, FALSE)
         ON CONFLICT (game_url) DO NOTHING;
       `;
 

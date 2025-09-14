@@ -83,11 +83,59 @@ export interface CommunityStats {
   top_creators: User[];
 }
 
-// Mock API Client (In production, this would connect to actual Neon PostgreSQL)
+// Levels API Client - fetches data from the image recognition API
 class CommunityAPIClient {
-  private baseUrl: string = '/api/community';
+  private levelsApiUrl: string = 'https://25hackmit--image-recognition-api-fastapi-app.modal.run/api/levels';
 
-  // Mock data for demonstration with Auth0 format
+  // Convert level data to Game format
+  private convertLevelToGame(level: any, index: number): Game {
+    // Create some variety in the mock data
+    const creators = ['Level Creator', 'Map Builder', 'Game Designer', 'AI Architect', 'World Maker'];
+    const difficulties: Array<'easy' | 'medium' | 'hard' | 'extreme'> = ['easy', 'medium', 'hard', 'extreme'];
+    const tagSets = [
+      ['adventure', 'exploration', 'classic'],
+      ['puzzle', 'strategic', 'challenging'],
+      ['action', 'fast-paced', 'dynamic'],
+      ['platformer', 'retro', 'nostalgic'],
+      ['maze', 'complex', 'brain-teaser']
+    ];
+
+    return {
+      id: level.id || `level-${index}`,
+      title: level.name || level.title || `Level ${level.id || index + 1}`,
+      description: level.description || `An exciting level generated from hand-drawn sketches. Challenge yourself with unique obstacles and creative gameplay!`,
+      game_url: `https://game.ai-creator.com/level-${level.id || index}`,
+      map_data_url: level.data_url, // This is the JSON URL from the API
+      thumbnail_url: level.thumbnail_url || `/thumbnails/level-${index % 6}.jpg`,
+      screenshot_urls: level.screenshot_urls || [],
+      creator_id: `creator-${index % creators.length}`,
+      creator_name: creators[index % creators.length],
+      creator: undefined,
+      likes_count: Math.floor(Math.random() * 2000) + 100,
+      shares_count: Math.floor(Math.random() * 500) + 20,
+      plays_count: Math.floor(Math.random() * 5000) + 200,
+      reposts_count: Math.floor(Math.random() * 200) + 10,
+      views_count: Math.floor(Math.random() * 10000) + 500,
+      difficulty_level: difficulties[index % difficulties.length],
+      estimated_play_time: Math.floor(Math.random() * 20) + 5,
+      tags: tagSets[index % tagSets.length],
+      ai_models_used: { vision: 'OpenCV', processing: 'Custom Algorithm' },
+      generation_time: Math.floor(Math.random() * 30) + 5,
+      processing_stats: { accuracy: '95%', objects_detected: Math.floor(Math.random() * 20) + 5 },
+      is_public: true,
+      is_featured: Math.random() > 0.7,
+      is_trending: Math.random() > 0.8,
+      featured_until: undefined,
+      created_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date().toISOString(),
+      published_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+      user_has_liked: false,
+      user_has_shared: false,
+      user_has_reposted: false
+    };
+  }
+
+  // Mock data for demonstration with Auth0 format (keeping for user stats)
   private mockUsers: User[] = [
     {
       auth0_id: 'auth0|648a1234567890abcdef1234',
@@ -148,169 +196,75 @@ class CommunityAPIClient {
     },
   ];
 
-  private mockGames: Game[] = [
-    {
-      id: 'game-1',
-      title: 'Fantasy Castle Realm',
-      description: 'Epic fantasy castle with multiple towers, secret passages, and dragon lairs. Perfect for RPG adventures!',
-      game_url: 'https://game.ai-creator.com/castle-123',
-      map_data_url: 'https://cdn.ai-creator.com/maps/castle-realm.json',
-      thumbnail_url: '/thumbnails/castle.jpg',
-      creator_id: 'auth0|648a1234567890abcdef1234',
-      creator_name: 'Dragon Master',
-      likes_count: 1234,
-      shares_count: 347,
-      plays_count: 5678,
-      reposts_count: 89,
-      views_count: 12450,
-      difficulty_level: 'medium',
-      estimated_play_time: 15,
-      tags: ['fantasy', 'castle', 'rpg', 'adventure'],
-      is_public: true,
-      is_featured: true,
-      is_trending: true,
-      created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-      updated_at: new Date().toISOString(),
-      published_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'game-2',
-      title: 'Neon Cyber City',
-      description: 'Futuristic cyberpunk city with neon lights, flying cars, and high-tech obstacles. Race through the digital matrix!',
-      game_url: 'https://game.ai-creator.com/cyber-456',
-      map_data_url: 'https://cdn.ai-creator.com/maps/cyber-city.json',
-      thumbnail_url: '/thumbnails/cyber.jpg',
-      creator_id: 'google-oauth2|648b5678901234efghij5678',
-      creator_name: 'Cyber Creator',
-      likes_count: 856,
-      shares_count: 234,
-      plays_count: 3421,
-      reposts_count: 67,
-      views_count: 8934,
-      difficulty_level: 'hard',
-      estimated_play_time: 12,
-      tags: ['cyberpunk', 'city', 'racing', 'futuristic'],
-      is_public: true,
-      is_featured: false,
-      is_trending: false,
-      created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
-      updated_at: new Date().toISOString(),
-      published_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'game-3',
-      title: 'Enchanted Forest',
-      description: 'Mystical forest filled with magical creatures, hidden treasures, and ancient trees that tell stories.',
-      game_url: 'https://game.ai-creator.com/forest-789',
-      map_data_url: 'https://cdn.ai-creator.com/maps/enchanted-forest.json',
-      thumbnail_url: '/thumbnails/forest.jpg',
-      creator_id: 'github|648c9012345678klmnop9012',
-      creator_name: 'Nature Wizard',
-      likes_count: 2134,
-      shares_count: 456,
-      plays_count: 7890,
-      reposts_count: 123,
-      views_count: 15678,
-      difficulty_level: 'easy',
-      estimated_play_time: 10,
-      tags: ['fantasy', 'forest', 'magic', 'exploration'],
-      is_public: true,
-      is_featured: true,
-      is_trending: false,
-      created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-      updated_at: new Date().toISOString(),
-      published_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'game-4',
-      title: 'Space Adventure',
-      description: 'Explore distant planets and navigate through asteroid fields in this epic space adventure!',
-      game_url: 'https://game.ai-creator.com/space-adventure',
-      map_data_url: 'https://cdn.ai-creator.com/maps/space-adventure.json',
-      thumbnail_url: '/thumbnails/space.jpg',
-      creator_id: 'auth0|648a1234567890abcdef1234',
-      creator_name: 'Dragon Master',
-      likes_count: 892,
-      shares_count: 167,
-      plays_count: 3245,
-      reposts_count: 45,
-      views_count: 7834,
-      difficulty_level: 'hard',
-      estimated_play_time: 18,
-      tags: ['space', 'adventure', 'sci-fi', 'exploration'],
-      is_public: true,
-      is_featured: false,
-      is_trending: true,
-      created_at: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-      updated_at: new Date().toISOString(),
-      published_at: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'game-5',
-      title: 'Desert Temple Quest',
-      description: 'Ancient temple filled with mysteries, traps, and hidden treasures waiting to be discovered.',
-      game_url: 'https://game.ai-creator.com/desert-temple',
-      map_data_url: 'https://cdn.ai-creator.com/maps/desert-temple.json',
-      thumbnail_url: '/thumbnails/temple.jpg',
-      creator_id: 'google-oauth2|648b5678901234efghij5678',
-      creator_name: 'Cyber Creator',
-      likes_count: 654,
-      shares_count: 98,
-      plays_count: 2176,
-      reposts_count: 23,
-      views_count: 4567,
-      difficulty_level: 'extreme',
-      estimated_play_time: 25,
-      tags: ['desert', 'temple', 'puzzle', 'adventure'],
-      is_public: true,
-      is_featured: false,
-      is_trending: false,
-      created_at: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-      updated_at: new Date().toISOString(),
-      published_at: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'game-6',
-      title: 'Underwater Paradise',
-      description: 'Swim through beautiful coral reefs and discover hidden underwater caves and marine life.',
-      game_url: 'https://game.ai-creator.com/underwater-paradise',
-      map_data_url: 'https://cdn.ai-creator.com/maps/underwater-paradise.json',
-      thumbnail_url: '/thumbnails/underwater.jpg',
-      creator_id: 'github|648c9012345678klmnop9012',
-      creator_name: 'Nature Wizard',
-      likes_count: 1456,
-      shares_count: 289,
-      plays_count: 4321,
-      reposts_count: 67,
-      views_count: 9876,
-      difficulty_level: 'medium',
-      estimated_play_time: 14,
-      tags: ['underwater', 'exploration', 'nature', 'peaceful'],
-      is_public: true,
-      is_featured: true,
-      is_trending: false,
-      created_at: new Date(Date.now() - 16 * 60 * 60 * 1000).toISOString(),
-      updated_at: new Date().toISOString(),
-      published_at: new Date(Date.now() - 16 * 60 * 60 * 1000).toISOString(),
-    }
-  ];
+  // Cache for API data
+  private levelsCache: Game[] = [];
+  private cacheExpiry: number = 0;
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
   // Simulate network delay
   private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  // Fetch levels from API
+  private async fetchLevelsFromAPI(): Promise<Game[]> {
+    try {
+      console.log('🔍 Fetching levels from API...');
+      const response = await fetch(this.levelsApiUrl);
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('📊 API Response:', data);
+
+      if (!data.levels || !Array.isArray(data.levels)) {
+        console.warn('⚠️ No levels found in API response, using empty array');
+        return [];
+      }
+
+      // Convert API levels to Game format
+      const games = data.levels.map((level: any, index: number) => this.convertLevelToGame(level, index));
+
+      // Cache the results
+      this.levelsCache = games;
+      this.cacheExpiry = Date.now() + this.CACHE_DURATION;
+
+      console.log(`✅ Successfully loaded ${games.length} levels from API`);
+      return games;
+    } catch (error) {
+      console.error('❌ Failed to fetch levels from API:', error);
+      // Return empty array on error
+      return [];
+    }
+  }
+
+  // Get levels with caching
+  private async getLevels(): Promise<Game[]> {
+    // Check if cache is still valid
+    if (this.levelsCache.length > 0 && Date.now() < this.cacheExpiry) {
+      console.log('📋 Using cached levels data');
+      return this.levelsCache;
+    }
+
+    // Fetch fresh data from API
+    return await this.fetchLevelsFromAPI();
+  }
+
   // Get community stats
   async getCommunityStats(): Promise<CommunityStats> {
     await this.delay(300);
 
+    const games = await this.getLevels();
+
     return {
-      total_games: 2847,
-      total_creators: 1203,
-      total_likes: 15247,
-      total_plays: 89234,
-      trending_games: this.mockGames.filter(g => g.is_trending).slice(0, 3),
-      featured_games: this.mockGames.filter(g => g.is_featured).slice(0, 6),
+      total_games: games.length,
+      total_creators: new Set(games.map(g => g.creator_name)).size,
+      total_likes: games.reduce((sum, g) => sum + g.likes_count, 0),
+      total_plays: games.reduce((sum, g) => sum + g.plays_count, 0),
+      trending_games: games.filter(g => g.is_trending).slice(0, 3),
+      featured_games: games.filter(g => g.is_featured).slice(0, 6),
       top_creators: this.mockUsers.slice(0, 5),
     };
   }
@@ -319,7 +273,7 @@ class CommunityAPIClient {
   async getGames(filters: GameFilters = {}): Promise<{ games: Game[], total: number }> {
     await this.delay(500);
 
-    let games = [...this.mockGames];
+    let games = await this.getLevels();
 
     // Apply filters
     if (filters.featured_only) {
@@ -398,7 +352,8 @@ class CommunityAPIClient {
   async getGame(id: string): Promise<Game | null> {
     await this.delay(200);
 
-    const game = this.mockGames.find(g => g.id === id);
+    const games = await this.getLevels();
+    const game = games.find(g => g.id === id);
     if (!game) return null;
 
     return {
@@ -411,7 +366,7 @@ class CommunityAPIClient {
   async likeGame(gameId: string): Promise<{ success: boolean, likes_count: number }> {
     await this.delay(300);
 
-    const game = this.mockGames.find(g => g.id === gameId);
+    const game = this.levelsCache.find(g => g.id === gameId);
     if (!game) throw new Error('Game not found');
 
     game.likes_count += 1;
@@ -422,7 +377,7 @@ class CommunityAPIClient {
   async unlikeGame(gameId: string): Promise<{ success: boolean, likes_count: number }> {
     await this.delay(300);
 
-    const game = this.mockGames.find(g => g.id === gameId);
+    const game = this.levelsCache.find(g => g.id === gameId);
     if (!game) throw new Error('Game not found');
 
     game.likes_count = Math.max(0, game.likes_count - 1);
@@ -433,7 +388,7 @@ class CommunityAPIClient {
   async shareGame(gameId: string, platform: string): Promise<{ success: boolean, shares_count: number }> {
     await this.delay(300);
 
-    const game = this.mockGames.find(g => g.id === gameId);
+    const game = this.levelsCache.find(g => g.id === gameId);
     if (!game) throw new Error('Game not found');
 
     game.shares_count += 1;
@@ -444,7 +399,7 @@ class CommunityAPIClient {
   async repostGame(gameId: string): Promise<{ success: boolean, reposts_count: number }> {
     await this.delay(300);
 
-    const game = this.mockGames.find(g => g.id === gameId);
+    const game = this.levelsCache.find(g => g.id === gameId);
     if (!game) throw new Error('Game not found');
 
     game.reposts_count += 1;
@@ -455,7 +410,7 @@ class CommunityAPIClient {
   async trackPlay(gameId: string): Promise<{ success: boolean }> {
     await this.delay(100);
 
-    const game = this.mockGames.find(g => g.id === gameId);
+    const game = this.levelsCache.find(g => g.id === gameId);
     if (!game) throw new Error('Game not found');
 
     game.plays_count += 1;
