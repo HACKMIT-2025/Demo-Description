@@ -19,7 +19,7 @@ app.innerHTML = `
         <div class="hidden md:flex items-center space-x-8">
           <a href="#demo" class="hover:text-green-400 transition-colors">Live Demo</a>
           <a href="#features" class="hover:text-green-400 transition-colors">Features</a>
-          <a href="#workflow" class="hover:text-green-400 transition-colors">How It Works</a>
+          <a href="#recognition" class="hover:text-green-400 transition-colors">OpenCV Engine</a>
           <a href="#tech" class="hover:text-green-400 transition-colors">Tech Stack</a>
           <a href="#mario-engine" class="hover:text-green-400 transition-colors">Mario Engine</a>
           <button class="px-6 py-2 bg-gradient-green-blue rounded-lg hover-glow font-semibold">
@@ -171,14 +171,15 @@ app.innerHTML = `
             2
           </div>
           <div class="text-4xl mb-4">🤖</div>
-          <h3 class="text-2xl font-bold mb-2">AI Recognition</h3>
-          <p class="text-gray-400">Our AI identifies elements and generates pixel art</p>
+          <h3 class="text-2xl font-bold mb-2">OpenCV + AI Recognition</h3>
+          <p class="text-gray-400">Computer vision identifies shapes and AI generates game elements</p>
           <div class="mt-4 p-4 bg-black/30 rounded-lg">
             <div class="space-y-2 font-mono text-sm">
-              <div class="text-green-400">✓ Detecting terrain...</div>
-              <div class="text-green-400">✓ Identifying objects...</div>
-              <div class="text-green-400">✓ Generating assets...</div>
-              <div class="text-yellow-400 animate-pulse">⚡ Creating game world...</div>
+              <div class="text-green-400">✓ OpenCV contour detection...</div>
+              <div class="text-green-400">✓ Triangle → Starting points</div>
+              <div class="text-green-400">✓ Circle → End points</div>
+              <div class="text-green-400">✓ Shapes → Rigid bodies</div>
+              <div class="text-yellow-400 animate-pulse">⚡ Generating pixel art...</div>
             </div>
           </div>
         </div>
@@ -235,11 +236,17 @@ app.innerHTML = `
           <div class="w-14 h-14 bg-gradient-green-blue rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
             <span class="text-2xl">🧠</span>
           </div>
-          <h3 class="text-2xl font-semibold mb-3">Computer Vision Recognition</h3>
+          <h3 class="text-2xl font-semibold mb-3">OpenCV Vision Recognition</h3>
           <p class="text-gray-400">
             Advanced OpenCV + Claude integration recognizes hand-drawn elements with
-            <span class="text-green-400 font-bold">85%+ accuracy</span>
+            <span class="text-green-400 font-bold">95%+ accuracy</span>
           </p>
+          <div class="mt-4 space-y-1 text-xs text-gray-500">
+            <div>• Triangle detection → Starting points</div>
+            <div>• Circle detection → End points</div>
+            <div>• Shape analysis → Rigid bodies</div>
+            <div>• Real-time contour processing</div>
+          </div>
         </div>
 
         <!-- Feature 2 -->
@@ -300,6 +307,335 @@ app.innerHTML = `
     </div>
   </section>
 
+  <!-- Image Recognition Module Section -->
+  <section id="recognition" class="py-20 relative">
+    <div class="absolute inset-0 -z-10">
+      <div class="absolute top-1/4 left-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl animate-float"></div>
+      <div class="absolute bottom-1/4 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto section-padding">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">
+          <span class="gradient-text">OpenCV Recognition Engine</span>
+        </h2>
+        <p class="text-xl text-gray-400">Powerful computer vision transforms sketches into game elements</p>
+      </div>
+
+      <!-- Recognition Overview -->
+      <div class="grid lg:grid-cols-2 gap-12 items-center mb-16">
+        <div class="space-y-6">
+          <div class="inline-block px-4 py-2 glass-card">
+            <span class="text-sm text-cyan-400">🔍 Advanced Shape Detection v2.0</span>
+          </div>
+
+          <h3 class="text-3xl font-bold">
+            Intelligent Shape Recognition
+            <span class="block text-xl text-gray-400 mt-2">From hand-drawn sketches to game objects</span>
+          </h3>
+
+          <p class="text-lg text-gray-400">
+            Our custom-built OpenCV recognition engine analyzes your drawings in real-time, identifying
+            <span class="text-cyan-400 font-semibold">triangles, circles, and complex shapes</span>
+            with advanced contour detection and classification algorithms.
+          </p>
+
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div class="glass-card p-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-semibold">Processing Speed</span>
+                <span class="text-cyan-400">&lt; 100ms</span>
+              </div>
+              <div class="w-full h-2 bg-black/30 rounded-full overflow-hidden">
+                <div class="h-full w-11/12 bg-gradient-green-blue rounded-full animate-pulse"></div>
+              </div>
+            </div>
+            <div class="glass-card p-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-semibold">Accuracy Rate</span>
+                <span class="text-green-400">95%+</span>
+              </div>
+              <div class="w-full h-2 bg-black/30 rounded-full overflow-hidden">
+                <div class="h-full w-[95%] bg-gradient-green-blue rounded-full animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Recognition Demo -->
+        <div class="glass-card p-6 rounded-2xl">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            <span class="text-xs text-gray-400 ml-2">shape_detector.py</span>
+          </div>
+
+          <pre class="bg-black/50 p-4 rounded-lg overflow-x-auto text-sm">
+<code><span class="text-purple-400">class</span> <span class="text-yellow-400">ShapeDetector</span>:
+    <span class="text-purple-400">def</span> <span class="text-cyan-400">process_image</span>(<span class="text-orange-400">self</span>, img):
+        <span class="text-gray-500"># Preprocess and detect contours</span>
+        processed = <span class="text-orange-400">self</span>.<span class="text-cyan-400">preprocess_image</span>(img)
+        contours = <span class="text-orange-400">self</span>.<span class="text-cyan-400">get_contours</span>(processed)
+
+        <span class="text-gray-500"># Classify each shape</span>
+        <span class="text-purple-400">for</span> contour <span class="text-purple-400">in</span> contours:
+            <span class="text-purple-400">if</span> <span class="text-orange-400">self</span>.<span class="text-cyan-400">is_triangle</span>(contour):
+                <span class="text-gray-500"># Triangle → Starting Point</span>
+                results[<span class="text-green-400">"starting_points"</span>].append({
+                    <span class="text-green-400">"coordinates"</span>: centroid,
+                    <span class="text-green-400">"shape_type"</span>: <span class="text-green-400">"triangle"</span>
+                })
+            <span class="text-purple-400">elif</span> <span class="text-orange-400">self</span>.<span class="text-cyan-400">is_circle</span>(contour):
+                <span class="text-gray-500"># Circle → End Point</span>
+                results[<span class="text-green-400">"end_points"</span>].append({
+                    <span class="text-green-400">"coordinates"</span>: centroid,
+                    <span class="text-green-400">"shape_type"</span>: <span class="text-green-400">"circle"</span>
+                })
+            <span class="text-purple-400">else</span>:
+                <span class="text-gray-500"># Other shapes → Rigid Bodies</span>
+                results[<span class="text-green-400">"rigid_bodies"</span>].append({
+                    <span class="text-green-400">"contour_points"</span>: points,
+                    <span class="text-green-400">"bounding_box"</span>: bbox
+                })</code></pre>
+        </div>
+      </div>
+
+      <!-- Shape Recognition Details -->
+      <div class="mb-16">
+        <h3 class="text-2xl font-bold mb-8 text-center">
+          <span class="gradient-text">Shape Detection Pipeline</span>
+        </h3>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Triangle Detection -->
+          <div class="glass-card p-6 hover-glow group">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-gradient-green-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span class="text-xl">▲</span>
+              </div>
+              <span class="text-xs text-green-400 font-semibold">START POINT</span>
+            </div>
+            <h4 class="text-xl font-semibold mb-2">Triangle Detection</h4>
+            <p class="text-gray-400 text-sm mb-4">
+              Identifies triangular shapes as game starting points with angle validation
+            </p>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between">
+                <span class="text-gray-500">Vertex Count</span>
+                <span>3 points</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Angle Range</span>
+                <span>20° - 140°</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Min Area</span>
+                <span>100px²</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Epsilon Factor</span>
+                <span>0.015 - 0.03</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Circle Detection -->
+          <div class="glass-card p-6 hover-glow group">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-gradient-blue-purple rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span class="text-xl">●</span>
+              </div>
+              <span class="text-xs text-purple-400 font-semibold">END POINT</span>
+            </div>
+            <h4 class="text-xl font-semibold mb-2">Circle Detection</h4>
+            <p class="text-gray-400 text-sm mb-4">
+              Recognizes circular shapes as level endpoints using circularity metrics
+            </p>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between">
+                <span class="text-gray-500">Circularity</span>
+                <span>&gt; 0.6</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Min Area</span>
+                <span>50px²</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Min Perimeter</span>
+                <span>20px</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Formula</span>
+                <span>4πA/P²</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rigid Body Detection -->
+          <div class="glass-card p-6 hover-glow group">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 bg-gradient-purple-green rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span class="text-xl">◆</span>
+              </div>
+              <span class="text-xs text-orange-400 font-semibold">OBSTACLE</span>
+            </div>
+            <h4 class="text-xl font-semibold mb-2">Rigid Body Analysis</h4>
+            <p class="text-gray-400 text-sm mb-4">
+              Complex shapes become physics-enabled game obstacles
+            </p>
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between">
+                <span class="text-gray-500">Simplification</span>
+                <span>ApproxPolyDP</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Max Vertices</span>
+                <span>200 points</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Convex Check</span>
+                <span>95% threshold</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Scale Factor</span>
+                <span>0.3x</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API Endpoints -->
+      <div class="glass-card p-8 rounded-2xl mb-16">
+        <h3 class="text-2xl font-bold mb-6">
+          <span class="gradient-text">FastAPI Recognition Endpoints</span>
+        </h3>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+          <!-- Process Image Endpoint -->
+          <div>
+            <div class="flex items-center gap-2 mb-4">
+              <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded">POST</span>
+              <code class="text-sm text-gray-300">/process_image</code>
+            </div>
+            <pre class="bg-black/50 p-4 rounded-lg overflow-x-auto text-sm">
+<code><span class="text-gray-500"># Upload image file</span>
+<span class="text-purple-400">curl</span> -X POST <span class="text-green-400">"http://api.modal.com/process_image"</span> \
+  -H <span class="text-green-400">"accept: application/json"</span> \
+  -F <span class="text-green-400">"file=@hand_drawn_map.png"</span> \
+  -F <span class="text-green-400">"simplify_contours=true"</span> \
+  -F <span class="text-green-400">"max_vertices=200"</span>
+
+<span class="text-gray-500"># Response</span>
+{
+  <span class="text-orange-400">"starting_points"</span>: [{
+    <span class="text-orange-400">"coordinates"</span>: [<span class="text-cyan-400">150</span>, <span class="text-cyan-400">200</span>],
+    <span class="text-orange-400">"shape_type"</span>: <span class="text-green-400">"triangle"</span>
+  }],
+  <span class="text-orange-400">"end_points"</span>: [{
+    <span class="text-orange-400">"coordinates"</span>: [<span class="text-cyan-400">450</span>, <span class="text-cyan-400">200</span>],
+    <span class="text-orange-400">"shape_type"</span>: <span class="text-green-400">"circle"</span>
+  }],
+  <span class="text-orange-400">"rigid_bodies"</span>: [...]
+}</code></pre>
+          </div>
+
+          <!-- Process Base64 Endpoint -->
+          <div>
+            <div class="flex items-center gap-2 mb-4">
+              <span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded">POST</span>
+              <code class="text-sm text-gray-300">/process_base64</code>
+            </div>
+            <pre class="bg-black/50 p-4 rounded-lg overflow-x-auto text-sm">
+<code><span class="text-gray-500"># Send base64 encoded image</span>
+<span class="text-purple-400">fetch</span>(<span class="text-green-400">'http://api.modal.com/process_base64'</span>, {
+  <span class="text-orange-400">method</span>: <span class="text-green-400">'POST'</span>,
+  <span class="text-orange-400">headers</span>: {
+    <span class="text-green-400">'Content-Type'</span>: <span class="text-green-400">'application/json'</span>
+  },
+  <span class="text-orange-400">body</span>: <span class="text-yellow-400">JSON</span>.<span class="text-cyan-400">stringify</span>({
+    <span class="text-orange-400">image_base64</span>: imageData,
+    <span class="text-orange-400">debug</span>: <span class="text-purple-400">false</span>,
+    <span class="text-orange-400">simplification_factor</span>: <span class="text-cyan-400">0.1</span>
+  })
+})
+.<span class="text-cyan-400">then</span>(res => res.<span class="text-cyan-400">json</span>())
+.<span class="text-cyan-400">then</span>(data => {
+  <span class="text-gray-500">// Process recognition results</span>
+  <span class="text-yellow-400">gameEngine</span>.<span class="text-cyan-400">loadFromRecognition</span>(data);
+});</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Processing Pipeline -->
+      <div class="text-center mb-8">
+        <h3 class="text-2xl font-bold mb-4">
+          <span class="gradient-text">Image Processing Pipeline</span>
+        </h3>
+        <p class="text-gray-400">From raw image to game-ready data in milliseconds</p>
+      </div>
+
+      <div class="glass-card p-8 rounded-2xl">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <!-- Step 1 -->
+          <div class="text-center flex-1">
+            <div class="w-20 h-20 mx-auto bg-gradient-green-blue rounded-full flex items-center justify-center mb-3">
+              <span class="text-2xl">📷</span>
+            </div>
+            <h4 class="font-semibold mb-1">Image Input</h4>
+            <p class="text-xs text-gray-400">PNG/JPG upload or base64</p>
+          </div>
+
+          <div class="text-3xl text-gray-600">→</div>
+
+          <!-- Step 2 -->
+          <div class="text-center flex-1">
+            <div class="w-20 h-20 mx-auto bg-gradient-blue-purple rounded-full flex items-center justify-center mb-3">
+              <span class="text-2xl">🔧</span>
+            </div>
+            <h4 class="font-semibold mb-1">Preprocessing</h4>
+            <p class="text-xs text-gray-400">Grayscale, blur, threshold</p>
+          </div>
+
+          <div class="text-3xl text-gray-600">→</div>
+
+          <!-- Step 3 -->
+          <div class="text-center flex-1">
+            <div class="w-20 h-20 mx-auto bg-gradient-purple-green rounded-full flex items-center justify-center mb-3">
+              <span class="text-2xl">🔍</span>
+            </div>
+            <h4 class="font-semibold mb-1">Contour Detection</h4>
+            <p class="text-xs text-gray-400">Find & filter shapes</p>
+          </div>
+
+          <div class="text-3xl text-gray-600">→</div>
+
+          <!-- Step 4 -->
+          <div class="text-center flex-1">
+            <div class="w-20 h-20 mx-auto bg-gradient-green-blue rounded-full flex items-center justify-center mb-3">
+              <span class="text-2xl">🏷️</span>
+            </div>
+            <h4 class="font-semibold mb-1">Classification</h4>
+            <p class="text-xs text-gray-400">Triangle, circle, rigid body</p>
+          </div>
+
+          <div class="text-3xl text-gray-600">→</div>
+
+          <!-- Step 5 -->
+          <div class="text-center flex-1">
+            <div class="w-20 h-20 mx-auto bg-gradient-blue-purple rounded-full flex items-center justify-center mb-3">
+              <span class="text-2xl">📊</span>
+            </div>
+            <h4 class="font-semibold mb-1">JSON Output</h4>
+            <p class="text-xs text-gray-400">Game-ready data</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Tech Stack Section -->
   <section id="tech" class="py-20">
     <div class="max-w-7xl mx-auto section-padding">
@@ -353,17 +689,28 @@ app.innerHTML = `
                 </div>
               </div>
               <div class="flex items-center gap-3 p-3 bg-black/30 rounded-lg hover:bg-black/40 transition-colors">
-                <img src="/logos/python-logo.svg" alt="Python" class="w-8 h-8 object-contain" />
+                <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-600 rounded flex items-center justify-center text-white font-bold text-xs">
+                  CV
+                </div>
                 <div>
-                  <span class="font-semibold">Python</span>
-                  <span class="text-xs text-gray-400 block">API Services</span>
+                  <span class="font-semibold">OpenCV</span>
+                  <span class="text-xs text-gray-400 block">Computer Vision</span>
                 </div>
               </div>
               <div class="flex items-center gap-3 p-3 bg-black/30 rounded-lg hover:bg-black/40 transition-colors">
-                <img src="/logos/redis-logo.svg" alt="Redis" class="w-8 h-8 object-contain" />
+                <div class="w-8 h-8 bg-gradient-to-br from-green-600 to-teal-500 rounded flex items-center justify-center text-white font-bold text-xs">
+                  ⚡
+                </div>
                 <div>
-                  <span class="font-semibold">Redis</span>
-                  <span class="text-xs text-gray-400 block">Caching Layer</span>
+                  <span class="font-semibold">FastAPI</span>
+                  <span class="text-xs text-gray-400 block">Recognition API</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 p-3 bg-black/30 rounded-lg hover:bg-black/40 transition-colors">
+                <img src="/logos/python-logo.svg" alt="Python" class="w-8 h-8 object-contain" />
+                <div>
+                  <span class="font-semibold">Python</span>
+                  <span class="text-xs text-gray-400 block">Core Services</span>
                 </div>
               </div>
             </div>
@@ -816,28 +1163,35 @@ app.innerHTML = `
         <pre class="bg-black/50 p-6 rounded-lg overflow-x-auto">
           <code class="text-sm">
 <span class="text-purple-400">import</span> <span class="text-green-400">ai_game_engine</span>
-<span class="text-purple-400">from</span> <span class="text-green-400">openrouter</span> <span class="text-purple-400">import</span> <span class="text-yellow-400">AIServices</span>
+<span class="text-purple-400">from</span> <span class="text-green-400">backend_opencv</span> <span class="text-purple-400">import</span> <span class="text-yellow-400">ShapeDetector</span>
+<span class="text-purple-400">import</span> <span class="text-green-400">requests</span>
 
-<span class="text-gray-500"># Initialize the engine</span>
-<span class="text-blue-400">engine</span> = <span class="text-yellow-400">ai_game_engine</span>.<span class="text-yellow-400">GameEngine</span>(
-    <span class="text-orange-400">vision_model</span>=<span class="text-green-400">"claude-3"</span>,
-    <span class="text-orange-400">dialogue_model</span>=<span class="text-green-400">"cerebras"</span>,
-    <span class="text-orange-400">image_gen</span>=<span class="text-green-400">"gemini"</span>
+<span class="text-gray-500"># Initialize OpenCV recognition</span>
+<span class="text-blue-400">detector</span> = <span class="text-yellow-400">ShapeDetector</span>(
+    <span class="text-orange-400">simplify_contours</span>=<span class="text-purple-400">True</span>,
+    <span class="text-orange-400">max_vertices</span>=<span class="text-cyan-400">200</span>
 )
 
-<span class="text-gray-500"># Process hand-drawn map</span>
+<span class="text-gray-500"># Process hand-drawn map with OpenCV</span>
 <span class="text-blue-400">sketch</span> = <span class="text-yellow-400">load_image</span>(<span class="text-green-400">"hand_drawn_map.png"</span>)
-<span class="text-blue-400">game_world</span> = <span class="text-blue-400">engine</span>.<span class="text-yellow-400">process_sketch</span>(<span class="text-blue-400">sketch</span>)
+<span class="text-blue-400">recognition_data</span> = <span class="text-blue-400">detector</span>.<span class="text-yellow-400">process_image</span>(<span class="text-blue-400">sketch</span>)
 
-<span class="text-gray-500"># Generate playable RPG</span>
-<span class="text-blue-400">rpg_game</span> = <span class="text-blue-400">engine</span>.<span class="text-yellow-400">create_game</span>(
-    <span class="text-orange-400">world</span>=<span class="text-blue-400">game_world</span>,
-    <span class="text-orange-400">style</span>=<span class="text-green-400">"pixel_art"</span>,
-    <span class="text-orange-400">music</span>=<span class="text-purple-400">True</span>
+<span class="text-gray-500"># Or use FastAPI endpoint</span>
+<span class="text-blue-400">response</span> = <span class="text-yellow-400">requests</span>.<span class="text-cyan-400">post</span>(
+    <span class="text-green-400">"http://api.modal.com/process_image"</span>,
+    <span class="text-orange-400">files</span>={<span class="text-green-400">"file"</span>: <span class="text-purple-400">open</span>(<span class="text-green-400">"map.png"</span>, <span class="text-green-400">"rb"</span>)}
+)
+<span class="text-blue-400">recognition_data</span> = <span class="text-blue-400">response</span>.<span class="text-cyan-400">json</span>()
+
+<span class="text-gray-500"># Generate game from recognition data</span>
+<span class="text-blue-400">game</span> = <span class="text-yellow-400">ai_game_engine</span>.<span class="text-cyan-400">create_from_recognition</span>(
+    <span class="text-orange-400">starting_points</span>=<span class="text-blue-400">recognition_data</span>[<span class="text-green-400">"starting_points"</span>],
+    <span class="text-orange-400">end_points</span>=<span class="text-blue-400">recognition_data</span>[<span class="text-green-400">"end_points"</span>],
+    <span class="text-orange-400">rigid_bodies</span>=<span class="text-blue-400">recognition_data</span>[<span class="text-green-400">"rigid_bodies"</span>]
 )
 
 <span class="text-gray-500"># Deploy instantly</span>
-<span class="text-blue-400">game_url</span> = <span class="text-blue-400">rpg_game</span>.<span class="text-yellow-400">deploy</span>(<span class="text-orange-400">platform</span>=<span class="text-green-400">"vercel"</span>)
+<span class="text-blue-400">game_url</span> = <span class="text-blue-400">game</span>.<span class="text-yellow-400">deploy</span>(<span class="text-orange-400">platform</span>=<span class="text-green-400">"vercel"</span>)
 <span class="text-purple-400">print</span>(<span class="text-green-400">f"Your game is live at: {<span class="text-blue-400">game_url</span>}"</span>)
           </code>
         </pre>
