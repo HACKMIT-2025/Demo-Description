@@ -60,9 +60,9 @@ class CommunityApp {
               </span>
             </div>
             <div class="flex items-center gap-4">
-              <button class="px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg font-semibold hover:scale-105 transition-transform">
+              <a href="https://frontend-ui-alpha-one.vercel.app/" target="_blank" class="px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg font-semibold hover:scale-105 transition-transform">
                 🎨 Create Map
-              </button>
+              </a>
               <button class="p-2 glass-card hover:bg-white/10 transition-colors rounded-lg">
                 👤
               </button>
