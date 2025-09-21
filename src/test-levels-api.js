@@ -3,9 +3,10 @@ async function testLevelsAPI() {
   console.log('🧪 Testing Levels API Integration...\n');
 
   try {
-    // Test direct API call
-    console.log('1️⃣ Testing direct API call...');
-    const response = await fetch('https://25hackmit--image-recognition-api-fastapi-app.modal.run/api/levels');
+    // Test our backend API call
+    console.log('1️⃣ Testing backend API call...');
+    const backendUrl = process.env.VITE_BACKEND_URL || 'https://25hackmit--hackmit25-backend.modal.run';
+    const response = await fetch(`${backendUrl}/api/db/levels`);
 
     if (!response.ok) {
       throw new Error(`API request failed: ${response.status} ${response.statusText}`);
@@ -23,35 +24,39 @@ async function testLevelsAPI() {
         console.log(`   Level ${index + 1}:`);
         console.log(`     ID: ${level.id}`);
         console.log(`     Name: ${level.name || level.title || 'Unnamed'}`);
-        console.log(`     Data URL: ${level.data_url}`);
+        console.log(`     Data: ${level.data ? 'Available' : 'No data'}`);
         console.log(`     Description: ${level.description || 'No description'}`);
+        console.log(`     Created: ${level.created_at || 'Unknown'}`);
       });
 
-      // Test each level's data_url
-      console.log('\n2️⃣ Testing JSON URLs...');
+      // Test level data structure
+      console.log('\n2️⃣ Testing Level Data Structure...');
       for (let i = 0; i < Math.min(3, data.levels.length); i++) {
         const level = data.levels[i];
-        if (level.data_url) {
+        if (level.data) {
           try {
-            const jsonResponse = await fetch(level.data_url);
-            console.log(`   ✅ Level ${level.id} JSON: ${jsonResponse.status} ${jsonResponse.ok ? 'OK' : 'Error'}`);
-
-            if (jsonResponse.ok) {
-              const jsonData = await jsonResponse.json();
-              console.log(`      JSON keys: ${Object.keys(jsonData).join(', ')}`);
-            }
+            console.log(`   ✅ Level ${level.id} Data: Available`);
+            const levelData = typeof level.data === 'string' ? JSON.parse(level.data) : level.data;
+            console.log(`      Data keys: ${Object.keys(levelData).join(', ')}`);
           } catch (error) {
-            console.log(`   ❌ Level ${level.id} JSON: ${error.message}`);
+            console.log(`   ❌ Level ${level.id} Data: ${error.message}`);
           }
+        } else {
+          console.log(`   ⚠️ Level ${level.id}: No data available`);
         }
       }
 
-      // Test Mario frontend URLs
-      console.log('\n3️⃣ Testing Mario frontend URL format...');
-      data.levels.slice(0, 2).forEach(level => {
-        const marioUrl = `http://frontend-mario.vercel.app/play?json=${encodeURIComponent(level.data_url)}`;
-        console.log(`   Level ${level.id}: ${marioUrl}`);
-      });
+      // Test individual level retrieval
+      console.log('\n3️⃣ Testing Individual Level Retrieval...');
+      const firstLevel = data.levels[0];
+      if (firstLevel) {
+        try {
+          const levelResponse = await fetch(`${backendUrl}/api/db/level/${firstLevel.id}`);
+          console.log(`   ✅ Level ${firstLevel.id} fetch: ${levelResponse.status} ${levelResponse.ok ? 'OK' : 'Error'}`);
+        } catch (error) {
+          console.log(`   ❌ Level ${firstLevel.id} fetch: ${error.message}`);
+        }
+      }
 
       console.log('\n🎉 API test completed successfully!');
       console.log(`\n📈 Summary:`);

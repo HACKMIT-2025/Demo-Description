@@ -1,7 +1,14 @@
 // Community Playground - Main Application
 // AI Game Creation Platform - Community Features
 import './community.css';
-import { communityAPI, type Game, type GameFilters, type CommunityStats } from './database/client';
+import { backendAPIClient, type Game, type CommunityStats } from './database/backend-api-client';
+
+interface GameFilters {
+  sort_by?: string;
+  limit?: number;
+  difficulty?: string;
+  search?: string;
+}
 
 class CommunityApp {
   private currentFilters: GameFilters = { sort_by: 'latest', limit: 12 };
@@ -25,14 +32,20 @@ class CommunityApp {
     this.updateLoadingState();
 
     try {
+      // Check backend connection first
+      const isConnected = await backendAPIClient.isConnected();
+      if (!isConnected) {
+        throw new Error('Backend API is not available');
+      }
+
       // Load community stats and initial games in parallel
       const [statsResult, gamesResult] = await Promise.all([
-        communityAPI.getCommunityStats(),
-        communityAPI.getGames(this.currentFilters)
+        backendAPIClient.getCommunityStats(),
+        backendAPIClient.getAllGames()
       ]);
 
       this.stats = statsResult;
-      this.games = gamesResult.games;
+      this.games = gamesResult;
 
       this.updateStats();
       this.updateGamesGrid();

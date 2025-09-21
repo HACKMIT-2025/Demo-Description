@@ -83,9 +83,10 @@ export interface CommunityStats {
   top_creators: User[];
 }
 
-// Levels API Client - fetches data from the image recognition API
+// Levels API Client - fetches data from our backend database
 class CommunityAPIClient {
-  private levelsApiUrl: string = 'https://25hackmit--image-recognition-api-fastapi-app.modal.run/api/levels';
+  private backendUrl: string = 'https://25hackmit--hackmit25-backend.modal.run';
+  private levelsApiUrl: string = `${this.backendUrl}/api/db/levels`;
 
   // Convert level data to Game format
   private convertLevelToGame(level: any, index: number): Game {
@@ -105,7 +106,7 @@ class CommunityAPIClient {
       title: level.name || level.title || `Level ${level.id || index + 1}`,
       description: level.description || `An exciting level generated from hand-drawn sketches. Challenge yourself with unique obstacles and creative gameplay!`,
       game_url: `https://game.ai-creator.com/level-${level.id || index}`,
-      map_data_url: level.data_url, // This is the JSON URL from the API
+      map_data_url: level.data ? `data:application/json;base64,${btoa(JSON.stringify(level.data))}` : undefined, // Embed level data as data URL
       thumbnail_url: level.thumbnail_url || `/thumbnails/level-${index % 6}.jpg`,
       screenshot_urls: level.screenshot_urls || [],
       creator_id: `creator-${index % creators.length}`,
@@ -224,7 +225,7 @@ class CommunityAPIClient {
         return [];
       }
 
-      // Convert API levels to Game format
+      // Convert backend levels to Game format
       const games = data.levels.map((level: any, index: number) => this.convertLevelToGame(level, index));
 
       // Cache the results
