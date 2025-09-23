@@ -48,6 +48,10 @@ try {
             <span class="text-yellow-400">🎨</span>
             <span>儿童版</span>
           </a>
+          <a href="kids-en.html" class="hover:text-blue-400 transition-colors flex items-center gap-1">
+            <span class="text-blue-400">🌍</span>
+            <span>Kids</span>
+          </a>
           <a href="#tech" class="hover:text-green-400 transition-colors">Tech Stack</a>
           <a href="#mario-engine" class="hover:text-green-400 transition-colors">Mario Engine</a>
           <a href="https://frontend-ui-alpha-one.vercel.app/" target="_blank" class="px-6 py-2 bg-gradient-green-blue rounded-lg hover-glow font-semibold">
