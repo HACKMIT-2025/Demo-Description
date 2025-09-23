@@ -12,7 +12,8 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         docs: resolve(__dirname, 'docs.html'),
-        community: resolve(__dirname, 'community.html')
+        community: resolve(__dirname, 'community.html'),
+        kids: resolve(__dirname, 'kids.html')
       }
     }
   },

@@ -44,6 +44,10 @@ try {
             <span class="text-pink-400">🌟</span>
             <span>Community</span>
           </a>
+          <a href="kids.html" class="hover:text-yellow-400 transition-colors flex items-center gap-1">
+            <span class="text-yellow-400">🎨</span>
+            <span>儿童版</span>
+          </a>
           <a href="#tech" class="hover:text-green-400 transition-colors">Tech Stack</a>
           <a href="#mario-engine" class="hover:text-green-400 transition-colors">Mario Engine</a>
           <a href="https://frontend-ui-alpha-one.vercel.app/" target="_blank" class="px-6 py-2 bg-gradient-green-blue rounded-lg hover-glow font-semibold">
@@ -114,6 +118,9 @@ try {
           <div class="flex flex-col sm:flex-row gap-4">
             <a href="https://frontend-ui-alpha-one.vercel.app/" target="_blank" class="px-8 py-4 bg-gradient-green-blue rounded-lg hover-glow text-lg font-semibold text-center">
               Try It Now 🚀
+            </a>
+            <a href="kids.html" class="px-8 py-4 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-lg hover-glow text-lg font-semibold text-center">
+              儿童版 🎨
             </a>
             <button class="px-8 py-4 glass-card hover:bg-white/10 transition-colors text-lg">
               Watch Demo ▶️
