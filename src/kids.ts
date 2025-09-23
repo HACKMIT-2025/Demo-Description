@@ -433,6 +433,164 @@ try {
         </div>
       </div>
 
+      <!-- AI的超级眼睛 - OpenCV系统介绍 -->
+      <div class="mt-16 glass-card p-8 rounded-2xl">
+        <div class="text-center mb-8">
+          <h3 class="text-3xl font-bold mb-4">
+            <span class="gradient-text">🔬 AI的超级眼睛是怎么工作的？</span>
+          </h3>
+          <p class="text-lg text-gray-400">让我告诉你一个秘密：AI有5种不同的"超能力"来看懂你的画！</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+          <!-- 左侧：形状识别展示 -->
+          <div class="space-y-6">
+            <div class="bg-gradient-to-br from-cyan-900/30 to-blue-900/20 rounded-xl p-6 border border-cyan-500/30">
+              <h4 class="text-xl font-bold text-cyan-400 mb-4">🎯 AI能识别的神奇形状</h4>
+
+              <div class="space-y-4">
+                <div class="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                  <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                    <span class="text-2xl">⬡</span>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-bold text-green-300">六边形 = 起点</p>
+                    <p class="text-xs text-gray-400">AI会检查6条边是否一样长！</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                  <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <span class="text-2xl">△</span>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-bold text-red-300">三角形 = 危险尖刺</p>
+                    <p class="text-xs text-gray-400">AI会测量3个角度，确保是真的三角形！</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                  <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center">
+                    <span class="text-2xl">✕</span>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-bold text-purple-300">十字形 = 终点</p>
+                    <p class="text-xs text-gray-400">AI会找4个凹进去的地方！</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                  <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center">
+                    <span class="text-2xl">●</span>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-bold text-yellow-300">圆形 = 金币</p>
+                    <p class="text-xs text-gray-400">AI计算圆度，超过60%就是圆！</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                  <div class="w-12 h-12 bg-gradient-to-br from-gray-500 to-slate-500 rounded-lg flex items-center justify-center">
+                    <span class="text-2xl">▬</span>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-bold text-gray-300">其他形状 = 平台</p>
+                    <p class="text-xs text-gray-400">AI记住每个点，画出完整轮廓！</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 右侧：AI处理步骤 -->
+          <div class="space-y-6">
+            <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/20 rounded-xl p-6 border border-purple-500/30">
+              <h4 class="text-xl font-bold text-purple-400 mb-4">🧙 AI的魔法步骤</h4>
+
+              <div class="space-y-3">
+                <div class="flex items-start gap-3">
+                  <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                  <div class="flex-1">
+                    <p class="font-bold text-purple-300">清理图片</p>
+                    <p class="text-sm text-gray-300">就像擦眼镜一样，让图片更清楚！去掉小点点和模糊的地方。</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                  <div class="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                  <div class="flex-1">
+                    <p class="font-bold text-pink-300">找出轮廓</p>
+                    <p class="text-sm text-gray-300">像描边一样，找到每个形状的边界线。</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                  <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                  <div class="flex-1">
+                    <p class="font-bold text-blue-300">测量形状</p>
+                    <p class="text-sm text-gray-300">量一量每条边多长，每个角多大，像不像圆形。</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                  <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-sm font-bold">4</div>
+                  <div class="flex-1">
+                    <p class="font-bold text-green-300">聪明判断</p>
+                    <p class="text-sm text-gray-300">用4种不同的方法检查，确保认对了形状！</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                  <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-sm font-bold">5</div>
+                  <div class="flex-1">
+                    <p class="font-bold text-yellow-300">变成游戏</p>
+                    <p class="text-sm text-gray-300">把认出的形状变成游戏里的东西！</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 有趣的数字展示 -->
+            <div class="bg-gradient-to-br from-green-900/30 to-blue-900/20 rounded-xl p-6 border border-green-500/30">
+              <h4 class="text-lg font-bold text-green-400 mb-4">🎯 超厉害的数字</h4>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-3 bg-white/5 rounded-lg">
+                  <p class="text-2xl font-bold text-yellow-400">0.03秒</p>
+                  <p class="text-xs text-gray-400">识别一个形状</p>
+                </div>
+                <div class="text-center p-3 bg-white/5 rounded-lg">
+                  <p class="text-2xl font-bold text-green-400">99%</p>
+                  <p class="text-xs text-gray-400">准确率</p>
+                </div>
+                <div class="text-center p-3 bg-white/5 rounded-lg">
+                  <p class="text-2xl font-bold text-blue-400">5种</p>
+                  <p class="text-xs text-gray-400">不同形状</p>
+                </div>
+                <div class="text-center p-3 bg-white/5 rounded-lg">
+                  <p class="text-2xl font-bold text-purple-400">4次</p>
+                  <p class="text-xs text-gray-400">检查验证</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 小贴士 -->
+        <div class="mt-8 p-6 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl border border-cyan-500/20">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">💡</span>
+            <div>
+              <p class="font-bold text-cyan-300 mb-2">小朋友也能理解的秘密：</p>
+              <p class="text-gray-300">
+                AI的眼睛叫OpenCV，就像一个超级聪明的机器人助手！它能在0.1秒内看懂你的画，
+                比眨眼还快！它会用数学魔法（测量角度和边长）来确保认对了每个形状。
+                最厉害的是，就算你画得有点歪，它也能认出来哦！
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- 现在就开始按钮 -->
       <div class="text-center mt-16">
         <a href="https://frontend-ui-alpha-one.vercel.app/" target="_blank"

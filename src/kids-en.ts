@@ -433,6 +433,164 @@ try {
         </div>
       </div>
 
+      <!-- AI's Super Eyes - OpenCV System Introduction -->
+      <div class="mt-16 glass-card p-8 rounded-2xl">
+        <div class="text-center mb-8">
+          <h3 class="text-3xl font-bold mb-4">
+            <span class="gradient-text">🔬 How Do AI's Super Eyes Work?</span>
+          </h3>
+          <p class="text-lg text-gray-400">Let me tell you a secret: AI has 5 different "superpowers" to understand your drawings!</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+          <!-- Left: Shape Recognition Display -->
+          <div class="space-y-6">
+            <div class="bg-gradient-to-br from-cyan-900/30 to-blue-900/20 rounded-xl p-6 border border-cyan-500/30">
+              <h4 class="text-xl font-bold text-cyan-400 mb-4">🎯 Magic Shapes AI Can Recognize</h4>
+
+              <div class="space-y-4">
+                <div class="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                  <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                    <span class="text-2xl">⬡</span>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-bold text-green-300">Hexagon = Start Point</p>
+                    <p class="text-xs text-gray-400">AI checks if all 6 sides are equal!</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                  <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <span class="text-2xl">△</span>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-bold text-red-300">Triangle = Danger Spikes</p>
+                    <p class="text-xs text-gray-400">AI measures 3 angles to ensure it's a real triangle!</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                  <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center">
+                    <span class="text-2xl">✕</span>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-bold text-purple-300">Cross = End Point</p>
+                    <p class="text-xs text-gray-400">AI finds 4 concave spots!</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                  <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center">
+                    <span class="text-2xl">●</span>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-bold text-yellow-300">Circle = Coins</p>
+                    <p class="text-xs text-gray-400">AI calculates circularity, over 60% is a circle!</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                  <div class="w-12 h-12 bg-gradient-to-br from-gray-500 to-slate-500 rounded-lg flex items-center justify-center">
+                    <span class="text-2xl">▬</span>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-bold text-gray-300">Other Shapes = Platforms</p>
+                    <p class="text-xs text-gray-400">AI remembers every point, draws complete contours!</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: AI Processing Steps -->
+          <div class="space-y-6">
+            <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/20 rounded-xl p-6 border border-purple-500/30">
+              <h4 class="text-xl font-bold text-purple-400 mb-4">🧙 AI's Magic Steps</h4>
+
+              <div class="space-y-3">
+                <div class="flex items-start gap-3">
+                  <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                  <div class="flex-1">
+                    <p class="font-bold text-purple-300">Clean the Image</p>
+                    <p class="text-sm text-gray-300">Like cleaning glasses to see better! Removes dots and blurry spots.</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                  <div class="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                  <div class="flex-1">
+                    <p class="font-bold text-pink-300">Find Outlines</p>
+                    <p class="text-sm text-gray-300">Like tracing, finds the borders of every shape.</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                  <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                  <div class="flex-1">
+                    <p class="font-bold text-blue-300">Measure Shapes</p>
+                    <p class="text-sm text-gray-300">Measures how long each side is, how big each angle is, how circular it is.</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                  <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-sm font-bold">4</div>
+                  <div class="flex-1">
+                    <p class="font-bold text-green-300">Smart Judgment</p>
+                    <p class="text-sm text-gray-300">Uses 4 different methods to check, ensures shapes are recognized correctly!</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                  <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-sm font-bold">5</div>
+                  <div class="flex-1">
+                    <p class="font-bold text-yellow-300">Turn into Game</p>
+                    <p class="text-sm text-gray-300">Transforms recognized shapes into game objects!</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fun Numbers Display -->
+            <div class="bg-gradient-to-br from-green-900/30 to-blue-900/20 rounded-xl p-6 border border-green-500/30">
+              <h4 class="text-lg font-bold text-green-400 mb-4">🎯 Super Cool Numbers</h4>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-3 bg-white/5 rounded-lg">
+                  <p class="text-2xl font-bold text-yellow-400">0.03s</p>
+                  <p class="text-xs text-gray-400">To recognize a shape</p>
+                </div>
+                <div class="text-center p-3 bg-white/5 rounded-lg">
+                  <p class="text-2xl font-bold text-green-400">99%</p>
+                  <p class="text-xs text-gray-400">Accuracy rate</p>
+                </div>
+                <div class="text-center p-3 bg-white/5 rounded-lg">
+                  <p class="text-2xl font-bold text-blue-400">5 types</p>
+                  <p class="text-xs text-gray-400">Different shapes</p>
+                </div>
+                <div class="text-center p-3 bg-white/5 rounded-lg">
+                  <p class="text-2xl font-bold text-purple-400">4 times</p>
+                  <p class="text-xs text-gray-400">Verification checks</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="mt-8 p-6 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl border border-cyan-500/20">
+          <div class="flex items-start gap-4">
+            <span class="text-3xl">💡</span>
+            <div>
+              <p class="font-bold text-cyan-300 mb-2">A Secret Kids Can Understand:</p>
+              <p class="text-gray-300">
+                AI's eyes are called OpenCV, like a super smart robot helper! It can understand your drawing in 0.1 seconds,
+                faster than a blink! It uses math magic (measuring angles and side lengths) to make sure it recognizes every shape correctly.
+                The coolest part is, even if your drawing is a bit crooked, it can still recognize it!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Start Now Button -->
       <div class="text-center mt-16">
         <a href="https://frontend-ui-alpha-one.vercel.app/" target="_blank"
