@@ -2,6 +2,7 @@
 // AI Game Creation Platform - Community Features
 import './community.css';
 import { backendAPIClient, type Game, type CommunityStats } from './database/backend-api-client';
+import { LeaderboardClient } from './leaderboard-client';
 
 interface GameFilters {
   sort_by?: string;
@@ -10,14 +11,55 @@ interface GameFilters {
   search?: string;
 }
 
+interface LeaderboardEntry {
+  rank: number;
+  level: {
+    id: number;
+    name: string;
+    difficulty: string;
+  };
+  player: {
+    nickname: string;
+    country_code?: string;
+  };
+  performance: {
+    completion_time_ms: number;
+    completion_time_formatted: string;
+    score: number;
+    deaths_count: number;
+    is_perfect_run: boolean;
+  };
+  played_at: string;
+}
+
+interface GlobalPlayer {
+  rank: number;
+  player: {
+    nickname: string;
+    country_code?: string;
+  };
+  statistics: {
+    levels_completed: number;
+    total_best_score: number;
+    avg_best_time_formatted: string;
+    perfect_runs_count: number;
+  };
+}
+
 class CommunityApp {
   private currentFilters: GameFilters = { sort_by: 'latest', limit: 12 };
   private games: Game[] = [];
   private stats: CommunityStats | null = null;
   private isLoading = false;
   private searchTimeout: NodeJS.Timeout | null = null;
+  private leaderboardClient: LeaderboardClient;
+  private currentView: 'community' | 'leaderboard' = 'community';
+  private leaderboardData: LeaderboardEntry[] = [];
+  private globalLeaderboard: GlobalPlayer[] = [];
+  private selectedLevelId: number | null = null;
 
   constructor() {
+    this.leaderboardClient = new LeaderboardClient();
     this.init();
   }
 
@@ -49,6 +91,12 @@ class CommunityApp {
 
       this.updateStats();
       this.updateGamesGrid();
+      
+      // Load level list for leaderboard
+      await this.loadLevelsList();
+      
+      // Load initial global leaderboard
+      await this.loadGlobalLeaderboard();
     } catch (error) {
       console.error('Failed to load community data:', error);
       this.showError('Failed to load community data. Please try again.');
@@ -68,9 +116,14 @@ class CommunityApp {
             <div class="flex items-center gap-4">
               <a href="/" class="text-xl font-bold cyberpunk-text">🎮 AI Game Creator</a>
               <span class="text-gray-400">•</span>
-              <span class="text-lg font-semibold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
-                Community Playground
-              </span>
+              <div class="flex items-center gap-4">
+                <button id="nav-community" class="nav-tab active px-3 py-1 rounded-lg transition-all text-lg font-semibold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                  🎮 Community
+                </button>
+                <button id="nav-leaderboard" class="nav-tab px-3 py-1 rounded-lg transition-all text-lg font-semibold text-gray-400 hover:text-white">
+                  🏆 Leaderboards
+                </button>
+              </div>
             </div>
             <div class="flex items-center gap-4">
               <a href="https://frontend-ui-alpha-one.vercel.app/" target="_blank" class="px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg font-semibold hover:scale-105 transition-transform">
@@ -99,13 +152,13 @@ class CommunityApp {
 
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header -->
-            <div class="text-center mb-12">
+            <div class="text-center mb-12" id="main-header">
               <h1 class="text-4xl md:text-6xl font-bold mb-6">
-                <span class="bg-gradient-to-r from-pink-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent animate-holographic">
+                <span class="bg-gradient-to-r from-pink-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent animate-holographic" id="main-title">
                   🌟 Community Playground
                 </span>
               </h1>
-              <p class="text-xl text-gray-400 mb-8 max-w-3xl mx-auto">
+              <p class="text-xl text-gray-400 mb-8 max-w-3xl mx-auto" id="main-description">
                 Discover, share, and remix amazing AI-generated game maps from our global community of creators
               </p>
 
@@ -130,8 +183,8 @@ class CommunityApp {
               </div>
             </div>
 
-            <!-- Search and Filters -->
-            <div class="mb-12">
+            <!-- Search and Filters - Community View -->
+            <div class="mb-12" id="community-filters">
               <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
                 <!-- Search Bar -->
                 <div class="relative flex-1 max-w-md">
@@ -167,11 +220,48 @@ class CommunityApp {
                 </div>
               </div>
             </div>
+
+            <!-- Leaderboard Controls - Hidden initially -->
+            <div class="mb-12 hidden" id="leaderboard-controls">
+              <div class="flex flex-col gap-6">
+                <!-- Level Selector -->
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                  <div class="flex-1 max-w-md">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Select Level</label>
+                    <select id="level-selector" class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-purple-500">
+                      <option value="">Choose a level...</option>
+                    </select>
+                  </div>
+                  
+                  <div class="flex gap-2 flex-wrap">
+                    <button id="global-leaderboard-btn" class="leaderboard-tab active px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg font-semibold hover:scale-105 transition-transform">
+                      🌍 Global Rankings
+                    </button>
+                    <button id="level-leaderboard-btn" class="leaderboard-tab px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition-colors" disabled>
+                      📊 Level Rankings
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Leaderboard Sort Options -->
+                <div class="flex gap-2 flex-wrap justify-center" id="leaderboard-sort">
+                  <button class="sort-tab active px-3 py-1 bg-cyan-600/50 border border-cyan-500 rounded-lg text-sm transition-all" data-sort="time">
+                    ⏱️ Best Time
+                  </button>
+                  <button class="sort-tab px-3 py-1 bg-gray-600/50 border border-gray-500 rounded-lg text-sm transition-all" data-sort="score">
+                    🏆 High Score
+                  </button>
+                  <button class="sort-tab px-3 py-1 bg-gray-600/50 border border-gray-500 rounded-lg text-sm transition-all" data-sort="perfect">
+                    ⭐ Perfect Runs
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <!-- Games Grid Section -->
-        <section class="pb-20">
+        <!-- Community Games Grid Section -->
+        <section class="pb-20" id="community-section">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Loading State -->
             <div id="loading-state" class="hidden text-center py-12">
@@ -199,6 +289,60 @@ class CommunityApp {
               <button id="load-more-btn" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg font-semibold hover:scale-105 transition-transform">
                 Load More Maps
               </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Leaderboard Section - Hidden initially -->
+        <section class="pb-20 hidden" id="leaderboard-section">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Loading State -->
+            <div id="leaderboard-loading" class="hidden text-center py-12">
+              <div class="inline-flex items-center gap-3">
+                <div class="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                <span class="text-gray-400">Loading leaderboard data...</span>
+              </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="leaderboard-error" class="hidden text-center py-12">
+              <div class="text-red-400 mb-4">⚠️ Failed to load leaderboard</div>
+              <button id="leaderboard-retry" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+                Try Again
+              </button>
+            </div>
+
+            <!-- Global Leaderboard -->
+            <div id="global-leaderboard-content">
+              <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold mb-2 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
+                  🌍 Global Player Rankings
+                </h2>
+                <p class="text-gray-400">Top players across all levels</p>
+              </div>
+              
+              <div id="global-leaderboard-grid" class="space-y-4">
+                <!-- Global leaderboard entries will be inserted here -->
+              </div>
+            </div>
+
+            <!-- Level Leaderboard -->
+            <div id="level-leaderboard-content" class="hidden">
+              <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold mb-2 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent" id="level-title">
+                  📊 Level Rankings
+                </h2>
+                <p class="text-gray-400" id="level-description">Compete for the best times and scores</p>
+              </div>
+
+              <!-- Level Stats -->
+              <div id="level-stats" class="grid md:grid-cols-4 gap-4 mb-8">
+                <!-- Level statistics will be inserted here -->
+              </div>
+              
+              <div id="level-leaderboard-grid" class="space-y-4">
+                <!-- Level leaderboard entries will be inserted here -->
+              </div>
             </div>
           </div>
         </section>
@@ -436,7 +580,375 @@ class CommunityApp {
     errorState.querySelector('div')!.textContent = `⚠️ ${message}`;
   }
 
+  private async loadLevelsList() {
+    try {
+      const levels = await this.leaderboardClient.getAllLevels();
+      const selector = document.getElementById('level-selector') as HTMLSelectElement;
+      
+      // Clear existing options except the first one
+      selector.innerHTML = '<option value="">Choose a level...</option>';
+      
+      levels.forEach(level => {
+        const option = document.createElement('option');
+        option.value = level.id.toString();
+        option.textContent = `${level.name} (${level.difficulty})`;
+        selector.appendChild(option);
+      });
+    } catch (error) {
+      console.error('Failed to load levels list:', error);
+    }
+  }
+
+  private async loadGlobalLeaderboard() {
+    try {
+      const result = await this.leaderboardClient.getGlobalLeaderboard({ limit: 50 });
+      this.globalLeaderboard = result.global_leaderboard;
+      this.updateGlobalLeaderboard();
+    } catch (error) {
+      console.error('Failed to load global leaderboard:', error);
+    }
+  }
+
+  private async loadLevelLeaderboard(levelId: number, sortBy: 'time' | 'score' = 'time', perfectOnly: boolean = false) {
+    this.selectedLevelId = levelId;
+    
+    try {
+      const [leaderboardResult, statsResult] = await Promise.all([
+        this.leaderboardClient.getLevelLeaderboard(levelId, { 
+          sort_by: sortBy, 
+          limit: 50,
+          perfect_runs_only: perfectOnly
+        }),
+        this.leaderboardClient.getLevelStats(levelId)
+      ]);
+      
+      this.leaderboardData = leaderboardResult.leaderboard;
+      this.updateLevelLeaderboard(statsResult);
+    } catch (error) {
+      console.error('Failed to load level leaderboard:', error);
+      this.showLeaderboardError('Failed to load level rankings');
+    }
+  }
+
+  private switchView(view: 'community' | 'leaderboard') {
+    this.currentView = view;
+    
+    // Update navigation
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.classList.remove('active');
+      tab.classList.remove('bg-gradient-to-r', 'from-pink-400', 'to-purple-400', 'bg-clip-text', 'text-transparent');
+      tab.classList.add('text-gray-400', 'hover:text-white');
+    });
+    
+    const activeTab = document.getElementById(view === 'community' ? 'nav-community' : 'nav-leaderboard');
+    if (activeTab) {
+      activeTab.classList.add('active');
+      activeTab.classList.remove('text-gray-400', 'hover:text-white');
+      activeTab.classList.add('bg-gradient-to-r', 'from-pink-400', 'to-purple-400', 'bg-clip-text', 'text-transparent');
+    }
+
+    // Update content
+    if (view === 'community') {
+      document.getElementById('community-section')?.classList.remove('hidden');
+      document.getElementById('leaderboard-section')?.classList.add('hidden');
+      document.getElementById('community-filters')?.classList.remove('hidden');
+      document.getElementById('leaderboard-controls')?.classList.add('hidden');
+      
+      // Update header
+      document.getElementById('main-title')!.textContent = '🌟 Community Playground';
+      document.getElementById('main-description')!.textContent = 'Discover, share, and remix amazing AI-generated game maps from our global community of creators';
+    } else {
+      document.getElementById('community-section')?.classList.add('hidden');
+      document.getElementById('leaderboard-section')?.classList.remove('hidden');
+      document.getElementById('community-filters')?.classList.add('hidden');
+      document.getElementById('leaderboard-controls')?.classList.remove('hidden');
+      
+      // Update header
+      document.getElementById('main-title')!.textContent = '🏆 Player Leaderboards';
+      document.getElementById('main-description')!.textContent = 'Compete with players worldwide and climb the rankings in your favorite levels';
+    }
+  }
+
+  private updateGlobalLeaderboard() {
+    const grid = document.getElementById('global-leaderboard-grid')!;
+    grid.innerHTML = this.globalLeaderboard.map(player => this.createGlobalPlayerCard(player)).join('');
+  }
+
+  private updateLevelLeaderboard(levelStats: any) {
+    // Update level title and description
+    document.getElementById('level-title')!.textContent = `📊 ${levelStats.level.name} Rankings`;
+    document.getElementById('level-description')!.textContent = `${levelStats.level.difficulty.toUpperCase()} difficulty • ${levelStats.statistics.total_attempts} total attempts`;
+    
+    // Update level stats
+    const statsContainer = document.getElementById('level-stats')!;
+    statsContainer.innerHTML = `
+      <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+        <div class="text-2xl font-bold text-cyan-400">${levelStats.statistics.unique_players}</div>
+        <div class="text-sm text-gray-400">Players</div>
+      </div>
+      <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+        <div class="text-2xl font-bold text-green-400">${levelStats.statistics.best_time.formatted}</div>
+        <div class="text-sm text-gray-400">Best Time</div>
+      </div>
+      <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+        <div class="text-2xl font-bold text-yellow-400">${levelStats.statistics.best_score}</div>
+        <div class="text-sm text-gray-400">High Score</div>
+      </div>
+      <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+        <div class="text-2xl font-bold text-purple-400">${levelStats.statistics.perfect_runs.percentage}%</div>
+        <div class="text-sm text-gray-400">Perfect Runs</div>
+      </div>
+    `;
+    
+    // Update leaderboard grid
+    const grid = document.getElementById('level-leaderboard-grid')!;
+    grid.innerHTML = this.leaderboardData.map(entry => this.createLeaderboardCard(entry)).join('');
+  }
+
+  private createGlobalPlayerCard(player: GlobalPlayer): string {
+    const getRankIcon = (rank: number) => {
+      if (rank === 1) return '🥇';
+      if (rank === 2) return '🥈';
+      if (rank === 3) return '🥉';
+      return `#${rank}`;
+    };
+
+    const getRankColor = (rank: number) => {
+      if (rank === 1) return 'border-yellow-500 bg-yellow-500/10';
+      if (rank === 2) return 'border-gray-400 bg-gray-400/10';
+      if (rank === 3) return 'border-orange-500 bg-orange-500/10';
+      return 'border-gray-600 bg-gray-800/50';
+    };
+
+    return `
+      <div class="flex items-center justify-between p-4 rounded-xl border transition-all hover:scale-[1.02] ${getRankColor(player.rank)}">
+        <div class="flex items-center gap-4">
+          <div class="text-2xl font-bold min-w-[60px] text-center">
+            ${getRankIcon(player.rank)}
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center font-bold text-lg">
+              ${player.player.nickname.slice(0, 1).toUpperCase()}
+            </div>
+            <div>
+              <div class="font-bold text-lg">${player.player.nickname}</div>
+              <div class="text-sm text-gray-400 flex items-center gap-2">
+                ${player.player.country_code ? `<span class="text-xs px-2 py-0.5 bg-gray-700 rounded">${player.player.country_code}</span>` : ''}
+                <span>${player.statistics.levels_completed} levels completed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <div class="text-lg font-bold text-yellow-400">${this.formatNumber(player.statistics.total_best_score)}</div>
+            <div class="text-xs text-gray-400">Total Score</div>
+          </div>
+          <div>
+            <div class="text-lg font-bold text-cyan-400">${player.statistics.avg_best_time_formatted}</div>
+            <div class="text-xs text-gray-400">Avg Time</div>
+          </div>
+          <div>
+            <div class="text-lg font-bold text-purple-400">${player.statistics.perfect_runs_count}</div>
+            <div class="text-xs text-gray-400">Perfect Runs</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  private createLeaderboardCard(entry: LeaderboardEntry): string {
+    const getRankIcon = (rank: number) => {
+      if (rank === 1) return '🥇';
+      if (rank === 2) return '🥈';
+      if (rank === 3) return '🥉';
+      return `#${rank}`;
+    };
+
+    const getRankColor = (rank: number) => {
+      if (rank === 1) return 'border-yellow-500 bg-yellow-500/10';
+      if (rank === 2) return 'border-gray-400 bg-gray-400/10';
+      if (rank === 3) return 'border-orange-500 bg-orange-500/10';
+      return 'border-gray-600 bg-gray-800/50';
+    };
+
+    return `
+      <div class="flex items-center justify-between p-4 rounded-xl border transition-all hover:scale-[1.02] ${getRankColor(entry.rank)}">
+        <div class="flex items-center gap-4">
+          <div class="text-2xl font-bold min-w-[60px] text-center">
+            ${getRankIcon(entry.rank)}
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center font-bold text-lg">
+              ${entry.player.nickname.slice(0, 1).toUpperCase()}
+            </div>
+            <div>
+              <div class="font-bold text-lg flex items-center gap-2">
+                ${entry.player.nickname}
+                ${entry.performance.is_perfect_run ? '<span class="text-xs bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-2 py-0.5 rounded-full font-bold">PERFECT</span>' : ''}
+              </div>
+              <div class="text-sm text-gray-400 flex items-center gap-2">
+                ${entry.player.country_code ? `<span class="text-xs px-2 py-0.5 bg-gray-700 rounded">${entry.player.country_code}</span>` : ''}
+                <span>${this.formatTimeAgo(entry.played_at)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <div class="text-lg font-bold text-green-400">${entry.performance.completion_time_formatted}</div>
+            <div class="text-xs text-gray-400">Time</div>
+          </div>
+          <div>
+            <div class="text-lg font-bold text-yellow-400">${entry.performance.score}</div>
+            <div class="text-xs text-gray-400">Score</div>
+          </div>
+          <div>
+            <div class="text-lg font-bold text-red-400">${entry.performance.deaths_count}</div>
+            <div class="text-xs text-gray-400">Deaths</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  private showLeaderboardError(message: string) {
+    const errorState = document.getElementById('leaderboard-error')!;
+    errorState.classList.remove('hidden');
+    errorState.querySelector('div')!.textContent = `⚠️ ${message}`;
+  }
+
+  private updateLeaderboardLoading(loading: boolean) {
+    const loadingState = document.getElementById('leaderboard-loading')!;
+    const content = document.getElementById('leaderboard-section')!;
+
+    if (loading) {
+      loadingState.classList.remove('hidden');
+      content.classList.add('opacity-50');
+    } else {
+      loadingState.classList.add('hidden');
+      content.classList.remove('opacity-50');
+    }
+  }
+
+  private async switchLeaderboardView(view: 'global' | 'level', levelId?: number) {
+    // Update tab states
+    document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+      tab.classList.remove('active', 'bg-gradient-to-r', 'from-purple-600', 'to-pink-600');
+      tab.classList.add('bg-gray-700', 'hover:bg-gray-600');
+    });
+
+    if (view === 'global') {
+      const globalBtn = document.getElementById('global-leaderboard-btn');
+      globalBtn?.classList.add('active', 'bg-gradient-to-r', 'from-purple-600', 'to-pink-600');
+      globalBtn?.classList.remove('bg-gray-700', 'hover:bg-gray-600');
+      
+      // Show global leaderboard
+      document.getElementById('global-leaderboard-content')?.classList.remove('hidden');
+      document.getElementById('level-leaderboard-content')?.classList.add('hidden');
+    } else if (view === 'level' && levelId) {
+      const levelBtn = document.getElementById('level-leaderboard-btn');
+      levelBtn?.classList.add('active', 'bg-gradient-to-r', 'from-purple-600', 'to-pink-600');
+      levelBtn?.classList.remove('bg-gray-700', 'hover:bg-gray-600');
+      
+      // Show level leaderboard
+      document.getElementById('global-leaderboard-content')?.classList.add('hidden');
+      document.getElementById('level-leaderboard-content')?.classList.remove('hidden');
+      
+      // Load level leaderboard data
+      this.updateLeaderboardLoading(true);
+      await this.loadLevelLeaderboard(levelId);
+      this.updateLeaderboardLoading(false);
+    }
+  }
+
   private attachEventListeners() {
+    // Navigation tabs
+    document.getElementById('nav-community')!.addEventListener('click', () => {
+      this.switchView('community');
+    });
+
+    document.getElementById('nav-leaderboard')!.addEventListener('click', () => {
+      this.switchView('leaderboard');
+    });
+
+    // Level selector
+    document.getElementById('level-selector')!.addEventListener('change', async (e) => {
+      const target = e.target as HTMLSelectElement;
+      const levelId = parseInt(target.value);
+      
+      if (levelId) {
+        // Enable level leaderboard button
+        const levelBtn = document.getElementById('level-leaderboard-btn') as HTMLButtonElement;
+        levelBtn.disabled = false;
+        levelBtn.classList.remove('bg-gray-700');
+        levelBtn.classList.add('bg-gray-600', 'hover:bg-gray-500');
+        
+        // Switch to level leaderboard if not already on global
+        const globalBtn = document.getElementById('global-leaderboard-btn');
+        if (!globalBtn?.classList.contains('active')) {
+          await this.switchLeaderboardView('level', levelId);
+        }
+      } else {
+        // Disable level leaderboard button
+        const levelBtn = document.getElementById('level-leaderboard-btn') as HTMLButtonElement;
+        levelBtn.disabled = true;
+        levelBtn.classList.add('bg-gray-700');
+        levelBtn.classList.remove('bg-gray-600', 'hover:bg-gray-500');
+      }
+    });
+
+    // Leaderboard view tabs
+    document.getElementById('global-leaderboard-btn')!.addEventListener('click', () => {
+      this.switchLeaderboardView('global');
+    });
+
+    document.getElementById('level-leaderboard-btn')!.addEventListener('click', () => {
+      const levelId = parseInt((document.getElementById('level-selector') as HTMLSelectElement).value);
+      if (levelId) {
+        this.switchLeaderboardView('level', levelId);
+      }
+    });
+
+    // Sort tabs
+    document.querySelectorAll('.sort-tab').forEach(tab => {
+      tab.addEventListener('click', async (e) => {
+        const target = e.target as HTMLElement;
+        const sortType = target.dataset.sort as string;
+        
+        // Update active state
+        document.querySelectorAll('.sort-tab').forEach(t => {
+          t.classList.remove('active', 'bg-cyan-600/50', 'border-cyan-500');
+          t.classList.add('bg-gray-600/50', 'border-gray-500');
+        });
+        target.classList.add('active', 'bg-cyan-600/50', 'border-cyan-500');
+        target.classList.remove('bg-gray-600/50', 'border-gray-500');
+        
+        // Reload level leaderboard with new sort
+        const levelId = this.selectedLevelId;
+        if (levelId && document.getElementById('level-leaderboard-content')?.classList.contains('hidden') === false) {
+          await this.loadLevelLeaderboard(
+            levelId, 
+            sortType === 'score' ? 'score' : 'time',
+            sortType === 'perfect'
+          );
+        }
+      });
+    });
+
+    // Leaderboard retry button
+    document.getElementById('leaderboard-retry')!.addEventListener('click', async () => {
+      document.getElementById('leaderboard-error')!.classList.add('hidden');
+      
+      if (document.getElementById('global-leaderboard-content')?.classList.contains('hidden') === false) {
+        await this.loadGlobalLeaderboard();
+      } else if (this.selectedLevelId) {
+        await this.loadLevelLeaderboard(this.selectedLevelId);
+      }
+    });
+
     // Filter tabs
     document.querySelectorAll('.filter-tab').forEach(tab => {
       tab.addEventListener('click', async (e) => {

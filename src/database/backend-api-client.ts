@@ -168,33 +168,21 @@ export class BackendAPIClient {
     }
   }
 
-  // Community features (using levels table for now)
+  // Community features - using new backend API endpoints
 
   async getAllGames(): Promise<Game[]> {
     try {
-      const levels = await this.getLevels();
+      const response = await fetch(`${this.backendUrl}/api/community/games`);
 
-      // Convert levels to games format for community display
-      return levels.map((level, index) => ({
-        id: level.id.toString(),
-        title: level.name,
-        description: level.description,
-        game_url: `#level-${level.id}`, // Placeholder URL
-        map_data_url: '', // Could store level data URL here
-        thumbnail_url: '', // Could generate thumbnail from level data
-        creator_name: level.created_by,
-        likes_count: Math.floor(Math.random() * 100), // Mock data
-        shares_count: Math.floor(Math.random() * 20),
-        plays_count: Math.floor(Math.random() * 500),
-        reposts_count: Math.floor(Math.random() * 10),
-        tags: [level.difficulty, 'mario', 'platformer'],
-        difficulty_level: level.difficulty as 'easy' | 'medium' | 'hard' | 'extreme',
-        is_featured: index < 3, // First 3 are featured
-        is_trending: index < 5, // First 5 are trending
-        created_at: level.created_at
-      }));
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || `Failed to get community games: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result.games || [];
     } catch (error) {
-      console.error('Error getting games:', error);
+      console.error('Error getting community games:', error);
       return [];
     }
   }
@@ -232,18 +220,14 @@ export class BackendAPIClient {
 
   async getCommunityStats(): Promise<CommunityStats> {
     try {
-      const games = await this.getAllGames();
+      const response = await fetch(`${this.backendUrl}/api/community/stats`);
 
-      const uniqueCreators = new Set(games.map(game => game.creator_name)).size;
-      const totalLikes = games.reduce((sum, game) => sum + game.likes_count, 0);
-      const totalPlays = games.reduce((sum, game) => sum + game.plays_count, 0);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || `Failed to get community stats: ${response.status}`);
+      }
 
-      return {
-        total_games: games.length,
-        total_creators: uniqueCreators,
-        total_likes: totalLikes,
-        total_plays: totalPlays
-      };
+      return await response.json();
     } catch (error) {
       console.error('Error getting community stats:', error);
       return {
