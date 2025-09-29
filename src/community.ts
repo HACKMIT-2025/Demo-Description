@@ -3,6 +3,7 @@
 import './community.css';
 import { backendAPIClient, type Game, type CommunityStats } from './database/backend-api-client';
 import { LeaderboardClient } from './leaderboard-client';
+import { communityAPI } from './database/client';
 
 interface GameFilters {
   sort_by?: string;
@@ -454,7 +455,7 @@ class CommunityApp {
           <!-- Hover Overlay -->
           <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <button class="play-btn px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg font-bold hover:scale-105 transition-transform"
-                    data-map-data-url="${game.map_data_url}">
+                    data-level-id="${game.id}">
               ▶️ PLAY NOW
             </button>
           </div>
@@ -1060,7 +1061,7 @@ class CommunityApp {
     document.querySelectorAll('.play-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
-        const mapDataUrl = (e.currentTarget as HTMLElement).dataset.mapDataUrl!;
+        const levelId = (e.currentTarget as HTMLElement).dataset.levelId!;
         const gameId = (e.currentTarget as HTMLElement).closest('[data-game-id]') as HTMLElement;
 
         // Track play
@@ -1068,8 +1069,9 @@ class CommunityApp {
           await communityAPI.trackPlay(gameId.dataset.gameId!);
         }
 
-        // Open Mario frontend with JSON URL parameter
-        const marioFrontendUrl = `http://frontend-mario.vercel.app/play?json=${encodeURIComponent(mapDataUrl)}`;
+        // Open Mario frontend with level ID parameter
+        const gameBaseUrl = import.meta.env.VITE_GAME_BASE_URL || 'https://game.ai-creator.com';
+        const marioFrontendUrl = `${gameBaseUrl}/play?id=${encodeURIComponent(levelId)}`;
         window.open(marioFrontendUrl, '_blank');
       });
     });
