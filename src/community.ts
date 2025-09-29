@@ -1061,18 +1061,30 @@ class CommunityApp {
     document.querySelectorAll('.play-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
-        const levelId = (e.currentTarget as HTMLElement).dataset.levelId!;
+
+        const levelId = (e.currentTarget as HTMLElement).dataset.levelId;
         const gameId = (e.currentTarget as HTMLElement).closest('[data-game-id]') as HTMLElement;
 
-        // Track play
-        if (gameId) {
-          await communityAPI.trackPlay(gameId.dataset.gameId!);
+        if (!levelId) {
+          console.error('No level ID found!');
+          return;
         }
 
-        // Open Mario frontend with level ID parameter
-        const gameBaseUrl = import.meta.env.VITE_GAME_BASE_URL || 'https://game.ai-creator.com';
-        const marioFrontendUrl = `${gameBaseUrl}/play?id=${encodeURIComponent(levelId)}`;
-        window.open(marioFrontendUrl, '_blank');
+        try {
+          // Track play (optional, don't block on errors)
+          if (gameId && gameId.dataset.gameId) {
+            communityAPI.trackPlay(gameId.dataset.gameId).catch(err =>
+              console.warn('Failed to track play:', err)
+            );
+          }
+
+          // Open Mario frontend with level ID parameter
+          const gameBaseUrl = import.meta.env.VITE_GAME_BASE_URL || 'https://game.ai-creator.com';
+          const marioFrontendUrl = `${gameBaseUrl}/play?id=${encodeURIComponent(levelId)}`;
+          window.open(marioFrontendUrl, '_blank');
+        } catch (error) {
+          console.error('Error in play button handler:', error);
+        }
       });
     });
   }
