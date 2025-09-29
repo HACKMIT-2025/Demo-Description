@@ -46,11 +46,7 @@ try {
           </a>
           <a href="kids.html" class="hover:text-yellow-400 transition-colors flex items-center gap-1">
             <span class="text-yellow-400">🎨</span>
-            <span>儿童版</span>
-          </a>
-          <a href="kids-en.html" class="hover:text-blue-400 transition-colors flex items-center gap-1">
-            <span class="text-blue-400">🌍</span>
-            <span>Kids</span>
+            <span>Kids Version</span>
           </a>
           <a href="#tech" class="hover:text-green-400 transition-colors">Tech Stack</a>
           <a href="#mario-engine" class="hover:text-green-400 transition-colors">Mario Engine</a>
@@ -124,7 +120,7 @@ try {
               Try It Now 🚀
             </a>
             <a href="kids.html" class="px-8 py-4 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-lg hover-glow text-lg font-semibold text-center">
-              儿童版 🎨
+              Kids Version 🎨
             </a>
             <button class="px-8 py-4 glass-card hover:bg-white/10 transition-colors text-lg">
               Watch Demo ▶️
@@ -1816,11 +1812,11 @@ console.log('🌐 User Agent:', navigator.userAgent.split(' ')[0]);
   `;
 
   errorDiv.innerHTML = `
-    <h3>⚠️ 应用加载错误</h3>
-    <p>检测到错误，正在诊断...</p>
+    <h3>⚠️ Application Loading Error</h3>
+    <p>Error detected, diagnosing...</p>
     <p><small>${error}</small></p>
     <p style="margin-top: 10px; font-size: 12px;">
-      请检查浏览器控制台获取详细信息
+      Please check browser console for detailed information
     </p>
   `;
 

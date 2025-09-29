@@ -1,5 +1,5 @@
 /**
- * 排行榜客户端 - Community页面专用
+ * Leaderboard Client - For Community Page
  */
 
 export interface LeaderboardEntry {
@@ -80,7 +80,7 @@ export class LeaderboardClient {
   }
 
   /**
-   * 获取指定关卡的排行榜
+   * Get leaderboard for specified level
    */
   async getLevelLeaderboard(
     levelId: number,
@@ -122,13 +122,13 @@ export class LeaderboardClient {
 
       return await response.json()
     } catch (error) {
-      console.error('获取排行榜失败:', error)
+      console.error('Failed to get leaderboard:', error)
       throw error
     }
   }
 
   /**
-   * 获取全局排行榜
+   * Get global leaderboard
    */
   async getGlobalLeaderboard(options: {
     sort_by?: 'score' | 'time' | 'levels'
@@ -159,13 +159,13 @@ export class LeaderboardClient {
 
       return await response.json()
     } catch (error) {
-      console.error('获取全局排行榜失败:', error)
+      console.error('Failed to get global leaderboard:', error)
       throw error
     }
   }
 
   /**
-   * 获取关卡统计信息
+   * Get level statistics
    */
   async getLevelStats(levelId: number): Promise<LevelStats> {
     try {
@@ -177,13 +177,13 @@ export class LeaderboardClient {
 
       return await response.json()
     } catch (error) {
-      console.error('获取关卡统计失败:', error)
+      console.error('Failed to get level stats:', error)
       throw error
     }
   }
 
   /**
-   * 获取所有关卡列表 (从现有API)
+   * Get all levels list (from existing API)
    */
   async getAllLevels(): Promise<Array<{id: number, name: string, difficulty: string}>> {
     try {
@@ -205,13 +205,13 @@ export class LeaderboardClient {
       
       return []
     } catch (error) {
-      console.error('获取关卡列表失败:', error)
+      console.error('Failed to get levels list:', error)
       return []
     }
   }
 
   /**
-   * 检查排行榜服务状态
+   * Check leaderboard service status
    */
   async healthCheck(): Promise<{
     status: string
@@ -222,12 +222,12 @@ export class LeaderboardClient {
       const response = await fetch(`${this.baseUrl}/leaderboard/health`)
 
       if (!response.ok) {
-        throw new Error('服务不可用')
+        throw new Error('Service unavailable')
       }
 
       return await response.json()
     } catch (error) {
-      console.error('健康检查失败:', error)
+      console.error('Health check failed:', error)
       throw error
     }
   }

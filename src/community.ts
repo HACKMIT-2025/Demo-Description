@@ -1078,9 +1078,10 @@ class CommunityApp {
             );
           }
 
-          // Open Mario frontend with level ID parameter
-          const gameBaseUrl = import.meta.env.VITE_GAME_BASE_URL || 'https://game.ai-creator.com';
-          const marioFrontendUrl = `${gameBaseUrl}/play?id=${encodeURIComponent(levelId)}`;
+          // Open Mario frontend with level ID parameter and English language
+          // Mario engine will auto-fetch game privacy status from backend API
+          const gameBaseUrl = import.meta.env.VITE_GAME_BASE_URL || 'https://frontend-mario.vercel.app';
+          const marioFrontendUrl = `${gameBaseUrl}/play?id=${encodeURIComponent(levelId)}&lang=en`;
           window.open(marioFrontendUrl, '_blank');
         } catch (error) {
           console.error('Error in play button handler:', error);

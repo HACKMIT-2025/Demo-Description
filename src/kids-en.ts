@@ -20,7 +20,6 @@ try {
           </div>
         </div>
         <div class="hidden md:flex items-center space-x-4">
-          <a href="kids.html" class="hover:text-yellow-400 transition-colors text-sm">🇨🇳 中文版</a>
           <a href="/" class="hover:text-green-400 transition-colors text-sm">🏠 Main Site</a>
           <a href="https://frontend-ui-alpha-one.vercel.app/" target="_blank" class="px-6 py-2 bg-gradient-green-blue rounded-lg hover-glow font-semibold text-lg">
             🚀 Start Creating
@@ -36,9 +35,6 @@ try {
       <!-- Mobile Menu Content -->
       <div id="mobile-menu" class="md:hidden hidden mt-4 pb-4 border-t border-white/10">
         <div class="flex flex-col space-y-3 mt-4">
-          <a href="kids.html" class="px-4 py-2 glass-card hover:bg-white/10 transition-colors rounded-lg text-center">
-            🇨🇳 中文版
-          </a>
           <a href="/" class="px-4 py-2 glass-card hover:bg-white/10 transition-colors rounded-lg text-center">
             🏠 Main Site
           </a>
@@ -752,9 +748,6 @@ try {
           </a>
           <a href="community.html" class="text-purple-400 hover:text-purple-300 transition-colors">
             🌟 See More Works
-          </a>
-          <a href="kids.html" class="text-yellow-400 hover:text-yellow-300 transition-colors">
-            🇨🇳 中文版
           </a>
         </div>
 
