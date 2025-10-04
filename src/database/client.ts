@@ -102,7 +102,7 @@ class CommunityAPIClient {
     ];
 
     return {
-      id: level.id || `level-${index}`,
+      id: typeof level.id === 'number' ? level.id : index, // Ensure integer ID
       title: level.name || level.title || `Level ${level.id || index + 1}`,
       description: level.description || `An exciting level generated from hand-drawn sketches. Challenge yourself with unique obstacles and creative gameplay!`,
       game_url: `https://game.ai-creator.com/level-${level.id || index}`,
@@ -364,10 +364,11 @@ class CommunityAPIClient {
   }
 
   // Like a game
-  async likeGame(gameId: string): Promise<{ success: boolean, likes_count: number }> {
+  async likeGame(gameId: string | number): Promise<{ success: boolean, likes_count: number }> {
     await this.delay(300);
 
-    const game = this.levelsCache.find(g => g.id === gameId);
+    const id = typeof gameId === 'string' ? parseInt(gameId, 10) : gameId;
+    const game = this.levelsCache.find(g => g.id === id);
     if (!game) throw new Error('Game not found');
 
     game.likes_count += 1;
@@ -375,10 +376,11 @@ class CommunityAPIClient {
   }
 
   // Unlike a game
-  async unlikeGame(gameId: string): Promise<{ success: boolean, likes_count: number }> {
+  async unlikeGame(gameId: string | number): Promise<{ success: boolean, likes_count: number }> {
     await this.delay(300);
 
-    const game = this.levelsCache.find(g => g.id === gameId);
+    const id = typeof gameId === 'string' ? parseInt(gameId, 10) : gameId;
+    const game = this.levelsCache.find(g => g.id === id);
     if (!game) throw new Error('Game not found');
 
     game.likes_count = Math.max(0, game.likes_count - 1);
@@ -386,14 +388,15 @@ class CommunityAPIClient {
   }
 
   // Share a game
-  async shareGame(gameId: string, platform: string): Promise<{ success: boolean, shares_count: number }> {
+  async shareGame(gameId: string | number, platform: string): Promise<{ success: boolean, shares_count: number }> {
     await this.delay(300);
 
-    let game = this.levelsCache.find(g => g.id === gameId);
+    const id = typeof gameId === 'string' ? parseInt(gameId, 10) : gameId;
+    let game = this.levelsCache.find(g => g.id === id);
 
     if (!game) {
       const games = await this.getLevels();
-      game = games.find(g => g.id === gameId);
+      game = games.find(g => g.id === id);
     }
 
     if (!game) {
@@ -406,10 +409,11 @@ class CommunityAPIClient {
   }
 
   // Repost/remix a game
-  async repostGame(gameId: string): Promise<{ success: boolean, reposts_count: number }> {
+  async repostGame(gameId: string | number): Promise<{ success: boolean, reposts_count: number }> {
     await this.delay(300);
 
-    const game = this.levelsCache.find(g => g.id === gameId);
+    const id = typeof gameId === 'string' ? parseInt(gameId, 10) : gameId;
+    const game = this.levelsCache.find(g => g.id === id);
     if (!game) throw new Error('Game not found');
 
     game.reposts_count += 1;
@@ -417,16 +421,17 @@ class CommunityAPIClient {
   }
 
   // Track game play
-  async trackPlay(gameId: string): Promise<{ success: boolean }> {
+  async trackPlay(gameId: string | number): Promise<{ success: boolean }> {
     await this.delay(100);
 
+    const id = typeof gameId === 'string' ? parseInt(gameId, 10) : gameId;
     // Try to find in cache first, if not found, load fresh data
-    let game = this.levelsCache.find(g => g.id === gameId);
+    let game = this.levelsCache.find(g => g.id === id);
 
     if (!game) {
       // Try to reload cache and find again
       const games = await this.getLevels();
-      game = games.find(g => g.id === gameId);
+      game = games.find(g => g.id === id);
     }
 
     if (!game) {

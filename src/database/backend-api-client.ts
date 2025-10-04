@@ -2,7 +2,7 @@
 // Replaces direct Neon API calls with secure backend proxy
 
 export interface Game {
-  id: string;
+  id: number; // Changed from string to number for game_levels table compatibility
   title: string;
   description?: string;
   game_url: string;
