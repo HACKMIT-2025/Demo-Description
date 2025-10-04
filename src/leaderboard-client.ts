@@ -113,7 +113,7 @@ export class LeaderboardClient {
       if (options.perfect_runs_only) params.append('perfect_runs_only', 'true')
 
       const response = await fetch(
-        `${this.baseUrl}/leaderboard/levels/${levelId}?${params.toString()}`
+        `${this.baseUrl}/api/leaderboard/levels/${levelId}?${params.toString()}`
       )
 
       if (!response.ok) {
@@ -150,7 +150,7 @@ export class LeaderboardClient {
       if (options.offset) params.append('offset', options.offset.toString())
 
       const response = await fetch(
-        `${this.baseUrl}/leaderboard/global?${params.toString()}`
+        `${this.baseUrl}/api/leaderboard/global?${params.toString()}`
       )
 
       if (!response.ok) {
@@ -169,7 +169,7 @@ export class LeaderboardClient {
    */
   async getLevelStats(levelId: number): Promise<LevelStats> {
     try {
-      const response = await fetch(`${this.baseUrl}/leaderboard/stats/level/${levelId}`)
+      const response = await fetch(`${this.baseUrl}/api/leaderboard/stats/level/${levelId}`)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
@@ -219,7 +219,7 @@ export class LeaderboardClient {
     database: string
   }> {
     try {
-      const response = await fetch(`${this.baseUrl}/leaderboard/health`)
+      const response = await fetch(`${this.baseUrl}/api/leaderboard/health`)
 
       if (!response.ok) {
         throw new Error('Service unavailable')
