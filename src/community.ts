@@ -444,12 +444,27 @@ class CommunityApp {
       <div class="community-card rounded-xl p-4 hover-lift group" data-game-id="${game.id}">
         <!-- Game Thumbnail -->
         <div class="relative overflow-hidden rounded-lg mb-4 map-thumbnail">
-          <div class="aspect-square bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center border border-purple-500/30">
-            <div class="text-center">
-              <span class="text-4xl mb-2 block">${this.getGameEmoji(game.tags[0])}</span>
-              <span class="text-sm text-purple-300">${game.title}</span>
+          ${game.thumbnail_url ? `
+            <div class="aspect-square bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center border border-purple-500/30 relative">
+              <img src="${game.thumbnail_url}"
+                   alt="${game.title}"
+                   class="w-full h-full object-cover"
+                   loading="lazy"
+                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              />
+              <div class="absolute inset-0 flex-col items-center justify-center hidden">
+                <span class="text-4xl mb-2 block">${this.getGameEmoji(game.tags[0])}</span>
+                <span class="text-sm text-purple-300">${game.title}</span>
+              </div>
             </div>
-          </div>
+          ` : `
+            <div class="aspect-square bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center border border-purple-500/30">
+              <div class="text-center">
+                <span class="text-4xl mb-2 block">${this.getGameEmoji(game.tags[0])}</span>
+                <span class="text-sm text-purple-300">${game.title}</span>
+              </div>
+            </div>
+          `}
           ${getBadge(game)}
 
           <!-- Hover Overlay -->

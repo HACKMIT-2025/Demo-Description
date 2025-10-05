@@ -257,6 +257,53 @@ export class BackendAPIClient {
     }
   }
 
+  // Screenshot functionality
+  async uploadScreenshot(levelId: number, imageBase64: string, useImgur: boolean = true): Promise<string> {
+    try {
+      const response = await fetch(`${this.backendUrl}/api/db/level/${levelId}/screenshot`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image_base64: imageBase64,
+          use_imgur: useImgur
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || `Failed to upload screenshot: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result.thumbnail_url || '';
+    } catch (error) {
+      console.error('Error uploading screenshot:', error);
+      throw error;
+    }
+  }
+
+  async getScreenshotUrl(levelId: number): Promise<string | null> {
+    try {
+      const response = await fetch(`${this.backendUrl}/api/db/level/${levelId}/screenshot`);
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null;
+        }
+        const error = await response.json();
+        throw new Error(error.detail || `Failed to get screenshot: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result.thumbnail_url || null;
+    } catch (error) {
+      console.error('Error getting screenshot:', error);
+      return null;
+    }
+  }
+
   // Utility method to update backend URL
   updateBackendUrl(url: string): void {
     this.backendUrl = url;
