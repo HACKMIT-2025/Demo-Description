@@ -391,6 +391,103 @@ class CommunityApp {
           </div>
         </div>
       </div>
+
+      <!-- Map Details Modal -->
+      <div id="map-details-modal" class="fixed inset-0 z-50 hidden modal-overlay" style="background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);">
+        <div class="flex items-center justify-center min-h-screen p-4">
+          <div class="modal-content bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 max-w-6xl w-full border border-purple-500/30 max-h-[90vh] overflow-y-auto">
+            <!-- Close Button -->
+            <button id="close-map-details" class="absolute top-4 right-4 w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors border border-gray-600">
+              ✕
+            </button>
+
+            <div class="grid md:grid-cols-2 gap-8">
+              <!-- Left: Map Preview -->
+              <div>
+                <div class="aspect-square bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-xl overflow-hidden border border-purple-500/30 mb-4">
+                  <img id="modal-map-screenshot" src="" alt="" class="w-full h-full object-cover" />
+                </div>
+
+                <!-- Map Info -->
+                <div class="space-y-4">
+                  <div>
+                    <h2 id="modal-map-title" class="text-3xl font-bold mb-2 bg-gradient-to-r from-pink-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent"></h2>
+                    <p id="modal-map-description" class="text-gray-300"></p>
+                  </div>
+
+                  <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                      <div id="modal-creator-avatar" class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center"></div>
+                      <div>
+                        <p class="font-semibold text-purple-300" id="modal-creator-name"></p>
+                        <p class="text-xs text-gray-400" id="modal-created-at"></p>
+                      </div>
+                    </div>
+                    <div class="flex-1"></div>
+                    <div id="modal-difficulty" class="px-3 py-1 rounded-full text-sm font-bold"></div>
+                  </div>
+
+                  <!-- Tags -->
+                  <div id="modal-tags" class="flex flex-wrap gap-2"></div>
+
+                  <!-- Stats -->
+                  <div class="grid grid-cols-4 gap-2 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                    <div class="text-center">
+                      <div class="text-pink-400 text-lg">❤️</div>
+                      <div id="modal-likes" class="font-bold text-sm"></div>
+                    </div>
+                    <div class="text-center">
+                      <div class="text-purple-400 text-lg">🔄</div>
+                      <div id="modal-reposts" class="font-bold text-sm"></div>
+                    </div>
+                    <div class="text-center">
+                      <div class="text-cyan-400 text-lg">📤</div>
+                      <div id="modal-shares" class="font-bold text-sm"></div>
+                    </div>
+                    <div class="text-center">
+                      <div class="text-gray-400 text-lg">🎮</div>
+                      <div id="modal-plays" class="font-bold text-sm"></div>
+                    </div>
+                  </div>
+
+                  <!-- Play Button -->
+                  <button id="modal-play-btn" class="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl font-bold text-lg hover:scale-105 transition-transform">
+                    ▶️ PLAY NOW
+                  </button>
+                </div>
+              </div>
+
+              <!-- Right: Leaderboard -->
+              <div>
+                <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <span>🏆</span>
+                  <span class="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
+                    Leaderboard
+                  </span>
+                </h3>
+
+                <!-- Leaderboard Loading -->
+                <div id="modal-leaderboard-loading" class="hidden text-center py-8">
+                  <div class="inline-flex items-center gap-3">
+                    <div class="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-gray-400">Loading rankings...</span>
+                  </div>
+                </div>
+
+                <!-- Leaderboard Empty -->
+                <div id="modal-leaderboard-empty" class="hidden text-center py-8">
+                  <div class="text-gray-400">No rankings yet. Be the first to play!</div>
+                </div>
+
+                <!-- Leaderboard Content -->
+                <div id="modal-leaderboard-content" class="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+                  <!-- Leaderboard entries will be inserted here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     `;
   }
 
@@ -441,7 +538,7 @@ class CommunityApp {
     };
 
     return `
-      <div class="community-card rounded-xl p-4 hover-lift group" data-game-id="${game.id}">
+      <div class="community-card rounded-xl p-4 hover-lift group cursor-pointer" data-game-id="${game.id}">
         <!-- Game Thumbnail -->
         <div class="relative overflow-hidden rounded-lg mb-4 map-thumbnail">
           ${game.thumbnail_url ? `
@@ -1041,9 +1138,35 @@ class CommunityApp {
         await this.handleShare(platform);
       });
     });
+
+    // Map details modal
+    document.getElementById('close-map-details')!.addEventListener('click', () => {
+      this.closeMapDetailsModal();
+    });
+
+    document.getElementById('map-details-modal')!.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        this.closeMapDetailsModal();
+      }
+    });
   }
 
   private attachGameCardListeners() {
+    // Game card click - open details modal
+    document.querySelectorAll('.community-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        // Don't open modal if clicking on buttons
+        const target = e.target as HTMLElement;
+        if (target.closest('button')) return;
+
+        const gameId = (card as HTMLElement).dataset.gameId!;
+        const game = this.games.find(g => g.id.toString() === gameId);
+        if (game) {
+          this.openMapDetailsModal(game);
+        }
+      });
+    });
+
     // Like buttons
     document.querySelectorAll('.like-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
@@ -1158,6 +1281,158 @@ class CommunityApp {
     } catch (error) {
       console.error('Failed to repost:', error);
     }
+  }
+
+  private async openMapDetailsModal(game: Game) {
+    const modal = document.getElementById('map-details-modal')!;
+
+    // Populate map details
+    const screenshot = document.getElementById('modal-map-screenshot') as HTMLImageElement;
+    screenshot.src = game.thumbnail_url || '';
+    screenshot.alt = game.title;
+
+    document.getElementById('modal-map-title')!.textContent = game.title;
+    document.getElementById('modal-map-description')!.textContent = game.description || 'An amazing AI-generated game world waiting to be explored!';
+
+    // Creator info
+    const creatorAvatar = document.getElementById('modal-creator-avatar')!;
+    creatorAvatar.textContent = this.getCreatorEmoji(game.creator_name);
+    document.getElementById('modal-creator-name')!.textContent = `@${game.creator_name.replace(' ', '').toLowerCase()}`;
+    document.getElementById('modal-created-at')!.textContent = this.formatTimeAgo(game.created_at);
+
+    // Difficulty
+    const difficultyBadge = document.getElementById('modal-difficulty')!;
+    const difficultyColors = {
+      easy: 'bg-green-500/20 text-green-400 border border-green-500',
+      medium: 'bg-yellow-500/20 text-yellow-400 border border-yellow-500',
+      hard: 'bg-orange-500/20 text-orange-400 border border-orange-500',
+      extreme: 'bg-red-500/20 text-red-400 border border-red-500'
+    };
+    difficultyBadge.className = `px-3 py-1 rounded-full text-sm font-bold ${difficultyColors[game.difficulty_level as keyof typeof difficultyColors] || 'bg-gray-500/20 text-gray-400'}`;
+    difficultyBadge.textContent = game.difficulty_level.toUpperCase();
+
+    // Tags
+    const tagsContainer = document.getElementById('modal-tags')!;
+    tagsContainer.innerHTML = game.tags.map(tag =>
+      `<span class="text-xs px-3 py-1 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300">#${tag}</span>`
+    ).join('');
+
+    // Stats
+    document.getElementById('modal-likes')!.textContent = this.formatNumber(game.likes_count);
+    document.getElementById('modal-reposts')!.textContent = this.formatNumber(game.reposts_count);
+    document.getElementById('modal-shares')!.textContent = this.formatNumber(game.shares_count);
+    document.getElementById('modal-plays')!.textContent = this.formatNumber(game.plays_count);
+
+    // Play button
+    const playBtn = document.getElementById('modal-play-btn')!;
+    playBtn.onclick = () => {
+      const gameBaseUrl = import.meta.env.VITE_GAME_BASE_URL || 'https://frontend-mario.vercel.app';
+      const marioFrontendUrl = `${gameBaseUrl}/play?id=${encodeURIComponent(game.id.toString())}&lang=en`;
+      window.open(marioFrontendUrl, '_blank');
+
+      // Track play
+      communityAPI.trackPlay(game.id).catch(err =>
+        console.warn('Failed to track play:', err)
+      );
+    };
+
+    // Show modal
+    modal.classList.remove('hidden');
+    modal.classList.add('show');
+
+    // Load leaderboard for this level
+    await this.loadModalLeaderboard(game.id);
+  }
+
+  private closeMapDetailsModal() {
+    const modal = document.getElementById('map-details-modal')!;
+    modal.classList.remove('show');
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 300);
+  }
+
+  private async loadModalLeaderboard(levelId: number) {
+    const loadingEl = document.getElementById('modal-leaderboard-loading')!;
+    const emptyEl = document.getElementById('modal-leaderboard-empty')!;
+    const contentEl = document.getElementById('modal-leaderboard-content')!;
+
+    // Show loading
+    loadingEl.classList.remove('hidden');
+    emptyEl.classList.add('hidden');
+    contentEl.classList.add('hidden');
+
+    try {
+      const result = await this.leaderboardClient.getLevelLeaderboard(levelId, {
+        sort_by: 'time',
+        limit: 10
+      });
+
+      // Hide loading
+      loadingEl.classList.add('hidden');
+
+      if (result.leaderboard.length === 0) {
+        emptyEl.classList.remove('hidden');
+      } else {
+        contentEl.classList.remove('hidden');
+        contentEl.innerHTML = result.leaderboard.map((entry, index) =>
+          this.createModalLeaderboardEntry(entry, index + 1)
+        ).join('');
+      }
+    } catch (error) {
+      console.error('Failed to load leaderboard:', error);
+      loadingEl.classList.add('hidden');
+      emptyEl.classList.remove('hidden');
+    }
+  }
+
+  private createModalLeaderboardEntry(entry: LeaderboardEntry, rank: number): string {
+    const getRankIcon = (rank: number) => {
+      if (rank === 1) return '🥇';
+      if (rank === 2) return '🥈';
+      if (rank === 3) return '🥉';
+      return `#${rank}`;
+    };
+
+    const getRankColor = (rank: number) => {
+      if (rank === 1) return 'border-yellow-500/50 bg-yellow-500/10';
+      if (rank === 2) return 'border-gray-400/50 bg-gray-400/10';
+      if (rank === 3) return 'border-orange-500/50 bg-orange-500/10';
+      return 'border-gray-600/50 bg-gray-800/30';
+    };
+
+    return `
+      <div class="flex items-center justify-between p-3 rounded-lg border ${getRankColor(rank)} transition-all hover:scale-[1.02]">
+        <div class="flex items-center gap-3">
+          <div class="text-xl font-bold min-w-[40px] text-center">
+            ${getRankIcon(rank)}
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center font-bold text-sm">
+              ${entry.player.nickname.slice(0, 1).toUpperCase()}
+            </div>
+            <div>
+              <div class="font-bold text-sm flex items-center gap-1">
+                ${entry.player.nickname}
+                ${entry.performance.is_perfect_run ? '<span class="text-[10px] bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-1.5 py-0.5 rounded-full font-bold">★</span>' : ''}
+              </div>
+              <div class="text-xs text-gray-400">${this.formatTimeAgo(entry.played_at)}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 text-center text-xs">
+          <div>
+            <div class="font-bold text-green-400">${entry.performance.completion_time_formatted}</div>
+            <div class="text-gray-500">Time</div>
+          </div>
+          <div>
+            <div class="font-bold text-yellow-400">${entry.performance.score}</div>
+            <div class="text-gray-500">Score</div>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   private openShareModal(gameId: string, gameTitle: string) {
