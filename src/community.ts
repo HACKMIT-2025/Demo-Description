@@ -47,6 +47,22 @@ interface GlobalPlayer {
   };
 }
 
+interface LevelPack {
+  id: number;
+  name: string;
+  description: string;
+  created_by: string;
+  is_public: boolean;
+  thumbnail_url: string | null;
+  total_levels: number;
+  created_at: string;
+  updated_at: string;
+  likes_count: number;
+  plays_count: number;
+  shares_count: number;
+  completion_count: number;
+}
+
 class CommunityApp {
   private currentFilters: GameFilters = { sort_by: 'latest', limit: 12 };
   private games: Game[] = [];
@@ -54,10 +70,12 @@ class CommunityApp {
   private isLoading = false;
   private searchTimeout: NodeJS.Timeout | null = null;
   private leaderboardClient: LeaderboardClient;
-  private currentView: 'community' | 'leaderboard' = 'community';
+  private currentView: 'community' | 'leaderboard' | 'packs' = 'community';
   private leaderboardData: LeaderboardEntry[] = [];
   private globalLeaderboard: GlobalPlayer[] = [];
   private selectedLevelId: number | null = null;
+  private levelPacks: LevelPack[] = [];
+  private packsSortBy: 'latest' | 'most_played' | 'most_liked' = 'latest';
 
   constructor() {
     this.leaderboardClient = new LeaderboardClient();
@@ -120,6 +138,9 @@ class CommunityApp {
               <div class="flex items-center gap-4">
                 <button id="nav-community" class="nav-tab active px-3 py-1 rounded-lg transition-all text-lg font-semibold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
                   🎮 Community
+                </button>
+                <button id="nav-packs" class="nav-tab px-3 py-1 rounded-lg transition-all text-lg font-semibold text-gray-400 hover:text-white">
+                  📦 Level Packs
                 </button>
                 <button id="nav-leaderboard" class="nav-tab px-3 py-1 rounded-lg transition-all text-lg font-semibold text-gray-400 hover:text-white">
                   🏆 Leaderboards
@@ -290,6 +311,45 @@ class CommunityApp {
               <button id="load-more-btn" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg font-semibold hover:scale-105 transition-transform">
                 Load More Maps
               </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Level Packs Section - Hidden initially -->
+        <section class="pb-20 hidden" id="packs-section">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Sort Options -->
+            <div class="mb-8 flex justify-center gap-4">
+              <button class="pack-sort-tab active px-4 py-2 bg-purple-600/50 border border-purple-500 rounded-lg transition-all" data-sort="latest">
+                🆕 Latest Packs
+              </button>
+              <button class="pack-sort-tab px-4 py-2 bg-gray-600/50 border border-gray-500 rounded-lg transition-all" data-sort="most_played">
+                🎮 Most Played
+              </button>
+              <button class="pack-sort-tab px-4 py-2 bg-gray-600/50 border border-gray-500 rounded-lg transition-all" data-sort="most_liked">
+                ❤️ Most Liked
+              </button>
+            </div>
+
+            <!-- Loading State -->
+            <div id="packs-loading" class="hidden text-center py-12">
+              <div class="inline-flex items-center gap-3">
+                <div class="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                <span class="text-gray-400">Loading level packs...</span>
+              </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="packs-error" class="hidden text-center py-12">
+              <div class="text-red-400 mb-4">⚠️ Failed to load level packs</div>
+              <button id="packs-retry" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+                Try Again
+              </button>
+            </div>
+
+            <!-- Packs Grid -->
+            <div id="packs-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <!-- Pack cards will be inserted here -->
             </div>
           </div>
         </section>
@@ -743,17 +803,21 @@ class CommunityApp {
     }
   }
 
-  private switchView(view: 'community' | 'leaderboard') {
+  private switchView(view: 'community' | 'leaderboard' | 'packs') {
     this.currentView = view;
-    
+
     // Update navigation
     document.querySelectorAll('.nav-tab').forEach(tab => {
       tab.classList.remove('active');
       tab.classList.remove('bg-gradient-to-r', 'from-pink-400', 'to-purple-400', 'bg-clip-text', 'text-transparent');
       tab.classList.add('text-gray-400', 'hover:text-white');
     });
-    
-    const activeTab = document.getElementById(view === 'community' ? 'nav-community' : 'nav-leaderboard');
+
+    let activeTabId = 'nav-community';
+    if (view === 'leaderboard') activeTabId = 'nav-leaderboard';
+    if (view === 'packs') activeTabId = 'nav-packs';
+
+    const activeTab = document.getElementById(activeTabId);
     if (activeTab) {
       activeTab.classList.add('active');
       activeTab.classList.remove('text-gray-400', 'hover:text-white');
@@ -763,19 +827,39 @@ class CommunityApp {
     // Update content
     if (view === 'community') {
       document.getElementById('community-section')?.classList.remove('hidden');
+      document.getElementById('packs-section')?.classList.add('hidden');
       document.getElementById('leaderboard-section')?.classList.add('hidden');
       document.getElementById('community-filters')?.classList.remove('hidden');
       document.getElementById('leaderboard-controls')?.classList.add('hidden');
-      
+
       // Update header
       document.getElementById('main-title')!.textContent = '🌟 Community Playground';
       document.getElementById('main-description')!.textContent = 'Discover, share, and remix amazing AI-generated game maps from our global community of creators';
+    } else if (view === 'packs') {
+      document.getElementById('community-section')?.classList.add('hidden');
+      document.getElementById('packs-section')?.classList.remove('hidden');
+      document.getElementById('leaderboard-section')?.classList.add('hidden');
+      document.getElementById('community-filters')?.classList.add('hidden');
+      document.getElementById('leaderboard-controls')?.classList.add('hidden');
+
+      // Update header
+      document.getElementById('main-title')!.textContent = '📦 Level Packs';
+      document.getElementById('main-description')!.textContent = 'Challenge yourself with curated collections of levels. Complete them all to master the game!';
+
+      // Load packs if not already loaded
+      if (this.levelPacks.length === 0) {
+        document.getElementById('packs-loading')?.classList.remove('hidden');
+        this.loadLevelPacks().then(() => {
+          document.getElementById('packs-loading')?.classList.add('hidden');
+        });
+      }
     } else {
       document.getElementById('community-section')?.classList.add('hidden');
+      document.getElementById('packs-section')?.classList.add('hidden');
       document.getElementById('leaderboard-section')?.classList.remove('hidden');
       document.getElementById('community-filters')?.classList.add('hidden');
       document.getElementById('leaderboard-controls')?.classList.remove('hidden');
-      
+
       // Update header
       document.getElementById('main-title')!.textContent = '🏆 Player Leaderboards';
       document.getElementById('main-description')!.textContent = 'Compete with players worldwide and climb the rankings in your favorite levels';
@@ -977,10 +1061,165 @@ class CommunityApp {
     }
   }
 
+  // ===========================================================================
+  // Level Packs Methods
+  // ===========================================================================
+
+  private async loadLevelPacks() {
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://25hackmit--hackmit25-backend.modal.run';
+      const response = await fetch(`${backendUrl}/api/level-packs?sort_by=${this.packsSortBy}&limit=20`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to load level packs: ${response.status}`);
+      }
+
+      const data = await response.json();
+      this.levelPacks = data.packs || [];
+      this.updatePacksGrid();
+    } catch (error) {
+      console.error('Failed to load level packs:', error);
+      document.getElementById('packs-error')?.classList.remove('hidden');
+      document.getElementById('packs-loading')?.classList.add('hidden');
+    }
+  }
+
+  private updatePacksGrid() {
+    const grid = document.getElementById('packs-grid')!;
+    grid.innerHTML = this.levelPacks.map(pack => this.createPackCard(pack)).join('');
+    this.attachPackCardListeners();
+  }
+
+  private createPackCard(pack: LevelPack): string {
+    const formatNumber = (num: number) => {
+      if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+      return num.toString();
+    };
+
+    const formatDate = (dateStr: string) => {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 0) return 'Today';
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays} days ago`;
+      if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+      return date.toLocaleDateString();
+    };
+
+    return `
+      <div class="community-card rounded-xl p-6 hover-lift group" data-pack-id="${pack.id}">
+        <!-- Pack Header -->
+        <div class="mb-4">
+          <div class="flex items-start justify-between mb-2">
+            <div class="flex-1">
+              <h3 class="font-bold text-xl mb-1 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                ${pack.name}
+              </h3>
+              <p class="text-sm text-gray-400">by @${pack.created_by}</p>
+            </div>
+            <div class="text-2xl ml-2">📦</div>
+          </div>
+
+          <!-- Thumbnail -->
+          ${pack.thumbnail_url ? `
+            <div class="aspect-video rounded-lg overflow-hidden mb-3 border border-purple-500/30">
+              <img src="${pack.thumbnail_url}"
+                   alt="${pack.name}"
+                   class="w-full h-full object-cover"
+                   loading="lazy"
+                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              />
+              <div class="w-full h-full bg-gradient-to-br from-purple-900/50 to-pink-900/50 hidden items-center justify-center">
+                <span class="text-4xl">📦</span>
+              </div>
+            </div>
+          ` : `
+            <div class="aspect-video rounded-lg mb-3 bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center border border-purple-500/30">
+              <span class="text-6xl">📦</span>
+            </div>
+          `}
+
+          <p class="text-sm text-gray-300 mb-3">
+            ${pack.description || 'A collection of exciting levels to conquer!'}
+          </p>
+        </div>
+
+        <!-- Pack Stats -->
+        <div class="grid grid-cols-2 gap-3 mb-4 p-3 bg-black/20 rounded-lg border border-purple-500/20">
+          <div class="flex items-center gap-2">
+            <span class="text-purple-400">🎯</span>
+            <div>
+              <div class="text-xs text-gray-400">Levels</div>
+              <div class="font-bold">${pack.total_levels}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-green-400">✓</span>
+            <div>
+              <div class="text-xs text-gray-400">Completed</div>
+              <div class="font-bold">${formatNumber(pack.completion_count)}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-pink-400">❤️</span>
+            <div>
+              <div class="text-xs text-gray-400">Likes</div>
+              <div class="font-bold">${formatNumber(pack.likes_count)}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-cyan-400">🎮</span>
+            <div>
+              <div class="text-xs text-gray-400">Plays</div>
+              <div class="font-bold">${formatNumber(pack.plays_count)}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Created Date -->
+        <div class="text-xs text-gray-500 mb-4">
+          Created ${formatDate(pack.created_at)}
+        </div>
+
+        <!-- Play Button -->
+        <button class="play-pack-btn w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg font-bold hover:scale-105 transition-transform flex items-center justify-center gap-2"
+                data-pack-id="${pack.id}">
+          <span>▶️</span>
+          <span>START PACK</span>
+        </button>
+      </div>
+    `;
+  }
+
+  private attachPackCardListeners() {
+    document.querySelectorAll('.play-pack-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const packId = (e.currentTarget as HTMLElement).dataset.packId;
+        if (packId) {
+          this.playLevelPack(parseInt(packId));
+        }
+      });
+    });
+  }
+
+  private playLevelPack(packId: number) {
+    // Open play page with pack ID parameter
+    const gameUrl = `https://frontend-mario-tau.vercel.app/play.html?packId=${packId}`;
+    window.open(gameUrl, '_blank');
+  }
+
   private attachEventListeners() {
     // Navigation tabs
     document.getElementById('nav-community')!.addEventListener('click', () => {
       this.switchView('community');
+    });
+
+    document.getElementById('nav-packs')!.addEventListener('click', () => {
+      this.switchView('packs');
     });
 
     document.getElementById('nav-leaderboard')!.addEventListener('click', () => {
@@ -1088,6 +1327,36 @@ class CommunityApp {
 
         await this.loadGames();
       });
+    });
+
+    // Pack sort tabs
+    document.querySelectorAll('.pack-sort-tab').forEach(tab => {
+      tab.addEventListener('click', async (e) => {
+        const target = e.target as HTMLElement;
+        const sortBy = target.dataset.sort as 'latest' | 'most_played' | 'most_liked';
+
+        // Update active state
+        document.querySelectorAll('.pack-sort-tab').forEach(t => {
+          t.classList.remove('active', 'bg-purple-600/50', 'border-purple-500');
+          t.classList.add('bg-gray-600/50', 'border-gray-500');
+        });
+        target.classList.remove('bg-gray-600/50', 'border-gray-500');
+        target.classList.add('active', 'bg-purple-600/50', 'border-purple-500');
+
+        // Update sort and reload packs
+        this.packsSortBy = sortBy;
+        document.getElementById('packs-loading')?.classList.remove('hidden');
+        await this.loadLevelPacks();
+        document.getElementById('packs-loading')?.classList.add('hidden');
+      });
+    });
+
+    // Packs retry button
+    document.getElementById('packs-retry')!.addEventListener('click', async () => {
+      document.getElementById('packs-error')?.classList.add('hidden');
+      document.getElementById('packs-loading')?.classList.remove('hidden');
+      await this.loadLevelPacks();
+      document.getElementById('packs-loading')?.classList.add('hidden');
     });
 
     // Search input
